@@ -1,0 +1,25 @@
+.home {
+	flex-grow: 1;
+	flex-shrink: 0;
+	height: 100dvh;
+	overflow-y: scroll;
+}
+
+.home-user-container {
+	background: rgba(0, 0, 0, 0.05);
+	margin-bottom: 20px;
+	padding: 20px;
+	border-radius: 10px;
+
+	form {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.textarea {
+		background: #fff;
+		padding: 10px;
+		border-radius: 10px;
+		resize: none;
+	}
+}

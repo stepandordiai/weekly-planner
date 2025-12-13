@@ -1,0 +1,16 @@
+.user-page {
+	padding-left: 100px;
+}
+
+.user-page-input-container {
+	// display: flex;
+	padding: 10px;
+	border: 2px solid #000;
+	border-radius: 15px;
+
+	input[type="text"] {
+		background: rgba(0, 0, 0, 0.1);
+		padding: 5px;
+		border-radius: 5px;
+	}
+}
