@@ -11,9 +11,19 @@ const app = express();
 
 app.use(express.json());
 
+// List of allowed origins (admin + public site)
+const allowedOrigins = [
+	"http://localhost:5173",
+	"https://weekly-planner-frontend.netlify.app/",
+];
+
 app.use(
 	cors({
-		origin: "https://weekly-planner-frontend.netlify.app/",
+		origin: function (origin, callback) {
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			}
+		},
 		// TODO:
 		credentials: true,
 	})

@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import usersData from "./../../assets/data/users-data.json";
+import axios from "axios";
 import "./Home.scss";
 
 const weekData = [
@@ -34,6 +36,25 @@ const date = dateNow.getDate();
 const monthNow = monthData[month];
 
 const Home = () => {
+	const [usersData, setUsersData] = useState([]);
+
+	useEffect(() => {
+		const getUsersData = async () => {
+			try {
+				const response = await axios.get(
+					"https://weekly-planner-backend.onrender.com/api"
+				);
+				setUsersData(response.data);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		getUsersData();
+	}, []);
+
+	console.log(usersData);
+
 	return (
 		<main className="home">
 			<p style={{ marginBottom: 50 }}>Home</p>
