@@ -34,7 +34,6 @@ const dayNow = weekData[correctDate];
 const month = dateNow.getMonth();
 const date = dateNow.getDate();
 const monthNow = monthData[month];
-const yearNow = dateNow.getFullYear();
 
 const Home = () => {
 	interface User {
@@ -56,7 +55,7 @@ const Home = () => {
 		people: Person[];
 	}
 
-	const [userData, setUserData] = useState<User[] | null>([]);
+	const [userData, setUserData] = useState<User[]>([]);
 
 	// const [loading, setLoading] = useState(true);
 
@@ -83,21 +82,21 @@ const Home = () => {
 	const updateUsersData = async (e: any) => {
 		e.preventDefault();
 		try {
-			await axios.put(
-				"https://weekly-planner-backend.onrender.com/api",
-				inputData
-			);
+			await axios.put("https://weekly-planner-backend.onrender.com/api", {
+				...inputData,
+				date: inputData.date.toISOString(),
+			});
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const usersDayNow = userData?.find(
-		(users) => users.date.slice(0, 10) === `${yearNow}-${month + 1}-${date}`
-	);
+	const todayKey = new Date().toISOString().slice(0, 10);
+
+	const usersDayNow = userData.find((u) => u.date.slice(0, 10) === todayKey);
 
 	useEffect(() => {
-		// 1️⃣ EDIT MODE — MongoDB data exists
+		// EDIT MODE
 		if (usersDayNow?.people?.length) {
 			setInputData({
 				date: new Date(usersDayNow.date),
@@ -106,7 +105,7 @@ const Home = () => {
 			return;
 		}
 
-		// 2️⃣ CREATE MODE — build from usersData
+		// CREATE MODE
 		if (usersData?.length) {
 			setInputData({
 				date: new Date(),
@@ -136,54 +135,27 @@ const Home = () => {
 				{dayNow} {monthNow} {date}
 			</p>
 			<div className="home-users-container">
-				{usersData.map((user, i) => {
-					return (
-						<div className="home-user-container" key={user.id}>
-							<div style={{ display: "flex", justifyContent: "space-between" }}>
-								<p>{user.name}</p>
-								{/* <p>{userData?.updatedAt}</p> */}
-							</div>
-							<form action="" onSubmit={updateUsersData}>
-								{/* <input type="text" placeholder="text" /> */}
-								<textarea
-									value={inputData.people?.[i]?.notes ?? ""}
-									onChange={(e) =>
-										handlePersonChange(i, "notes", e.target.value)
-									}
-									className="textarea"
-									name={user.name}
-									id=""
-									rows={5}
-								></textarea>
-								<div
-									style={{ display: "flex", justifyContent: "space-between" }}
-								>
-									<input
-										style={{
-											background: "red",
-											color: "white",
-											padding: 5,
-											borderRadius: 5,
-										}}
-										type="reset"
-										value="Reset"
-									/>
-									<button
-										style={{
-											background: "green",
-											color: "white",
-											padding: 5,
-											borderRadius: 5,
-										}}
-										type="submit"
-									>
-										Submit
-									</button>
-								</div>
-							</form>
+				{inputData.people.map((person, i) => (
+					<div className="home-user-container" key={person.name}>
+						<div style={{ display: "flex", justifyContent: "space-between" }}>
+							<p>{person.name}</p>
 						</div>
-					);
-				})}
+
+						<form onSubmit={updateUsersData}>
+							<textarea
+								value={person.notes}
+								onChange={(e) => handlePersonChange(i, "notes", e.target.value)}
+								className="textarea"
+								rows={5}
+							/>
+
+							<div style={{ display: "flex", justifyContent: "space-between" }}>
+								<input type="reset" value="Reset" />
+								<button type="submit">Submit</button>
+							</div>
+						</form>
+					</div>
+				))}
 			</div>
 		</main>
 	);

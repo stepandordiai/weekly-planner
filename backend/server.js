@@ -14,7 +14,7 @@ app.use(express.json());
 // List of allowed origins (admin + public site)
 const allowedOrigins = [
 	"http://localhost:5173",
-	"https://weekly-planner-frontend.netlify.app/",
+	"https://weekly-planner-frontend.netlify.app",
 ];
 
 app.use(
