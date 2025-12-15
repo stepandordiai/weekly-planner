@@ -104,7 +104,7 @@ const Home = () => {
 
 		const people = usersData.map((user) => {
 			const existingPerson = usersDayNow?.people.find(
-				(p) => p.name === user.name
+				(p) => p.name == user.name
 			);
 
 			return {
@@ -130,7 +130,7 @@ const Home = () => {
 		});
 	};
 
-	if (loading || !userData) return;
+	if (loading) return;
 
 	return (
 		<main className="home">
