@@ -97,24 +97,26 @@ const Home = () => {
 	);
 
 	useEffect(() => {
-		if (!usersData?.length) return;
+		// 1️⃣ EDIT MODE — MongoDB data exists
+		if (usersDayNow?.people?.length) {
+			setInputData({
+				date: new Date(usersDayNow.date),
+				people: usersDayNow.people,
+			});
+			return;
+		}
 
-		const people = usersData.map((user) => {
-			const existingPerson = usersDayNow?.people.find(
-				(p) => p.name == user.name
-			);
-
-			return {
-				name: user.name,
-				notes: existingPerson?.notes || "",
-			};
-		});
-
-		setInputData({
-			date: usersDayNow?.date ? new Date(usersDayNow.date) : new Date(),
-			people,
-		});
-	}, [usersData, usersDayNow]);
+		// 2️⃣ CREATE MODE — build from usersData
+		if (usersData?.length) {
+			setInputData({
+				date: new Date(),
+				people: usersData.map((user) => ({
+					name: user.name,
+					notes: "",
+				})),
+			});
+		}
+	}, [usersDayNow, usersData]);
 
 	// TODO: LEARN THIS
 	const handlePersonChange = (index: number, field: string, value: string) => {
