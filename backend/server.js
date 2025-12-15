@@ -19,13 +19,7 @@ const allowedOrigins = [
 
 app.use(
 	cors({
-		origin: function (origin, callback) {
-			if (!origin || allowedOrigins.includes(origin)) {
-				callback(null, true);
-			}
-		},
-		// TODO:
-		credentials: true,
+		origin: allowedOrigins,
 	})
 );
 
@@ -46,6 +40,10 @@ app.use("/api", userRoutes);
 
 app.get("/", (req, res) => {
 	res.send("Hello Traveller...");
+});
+
+app.get("/health", (req, res) => {
+	res.status(200).send("ok");
 });
 
 app.listen(PORT, () => {
