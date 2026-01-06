@@ -1,9 +1,14 @@
 .user-page {
-	padding-left: 100px;
+	padding: 10px;
+	background: var(--bg-clr);
+	width: 100%;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
 
 .user-page-input-container {
-	// display: flex;
 	padding: 10px;
 	border: 2px solid #000;
 	border-radius: 15px;
@@ -13,4 +18,38 @@
 		padding: 5px;
 		border-radius: 5px;
 	}
+}
+
+.visit {
+	background: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.visit-container {
+	display: flex;
+	gap: 5px;
+	align-items: flex-end;
+}
+
+.visit-input-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.visit-input__btn-start {
+	padding: 5px;
+	border: 2px solid rgb(102, 217, 19);
+	background: rgba(121, 241, 36, 0.1);
+	border-radius: 10px;
+	color: rgb(102, 217, 19);
+}
+
+.visit-input__btn-stop {
+	padding: 5px;
+	border: 2px solid red;
+	background: rgba(255, 0, 0, 0.1);
+	border-radius: 10px;
+	color: red;
 }

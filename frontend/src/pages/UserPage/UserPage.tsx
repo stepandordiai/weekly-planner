@@ -1,16 +1,8 @@
 import { useParams } from "react-router-dom";
 import usersData from "../../assets/data/users-data.json";
+import Weekbar from "../../components/Weekbar/Weekbar";
 import "./UserPage.scss";
-
-const weekData = [
-	{ id: 1, day: "Monday" },
-	{ id: 2, day: "Tuesday" },
-	{ id: 3, day: "Wednesday" },
-	{ id: 4, day: "Thursday" },
-	{ id: 5, day: "Friday" },
-	{ id: 6, day: "Saturday" },
-	{ id: 7, day: "Sunday" },
-];
+import Visit from "../../components/Visit/Visit";
 
 const UserPage = () => {
 	const { id } = useParams();
@@ -18,10 +10,12 @@ const UserPage = () => {
 	const user = usersData.find((user) => String(user.id) === id);
 
 	return (
-		<div>
-			<p>{user?.name}</p>
+		<main className="user-page">
+			<Weekbar />
+			<Visit />
+			<p style={{ color: "#000" }}>{user?.name}</p>
 
-			<div className="user-page">
+			{/* <div className="user-page">
 				{weekData.map((week) => {
 					return (
 						<div className="user-page-input-container" key={week.id}>
@@ -31,8 +25,8 @@ const UserPage = () => {
 						</div>
 					);
 				})}
-			</div>
-		</div>
+			</div> */}
+		</main>
 	);
 };
 

@@ -1,50 +1,37 @@
 import express from "express";
 import dotenv from "dotenv";
-dotenv.config();
-import mongoose from "mongoose";
+import authRoutes from "./routes/auth.js";
+import { connectDB } from "./config/db.js";
 import cors from "cors";
-import userRoutes from "./routes/userRoutes.js";
+dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+connectDB();
+
 app.use(express.json());
 
-// List of allowed origins (admin + public site)
 const allowedOrigins = [
-	"http://localhost:5173",
 	"https://weekly-planner-frontend.netlify.app",
+	"http://localhost:3000",
+	"http://localhost:5173",
 ];
 
+// CORS for frontend domain
 app.use(
 	cors({
-		origin: allowedOrigins,
+		origin: function (origin, callback) {
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			}
+		},
+		// credentials: true,
 	})
 );
 
-const connectDB = async () => {
-	try {
-		const conn = await mongoose.connect(process.env.MONGO_URI);
-		console.log(`MongoDB connected ${conn.connection.host}`);
-	} catch (err) {
-		console.log(err);
-		process.exit(1);
-	}
-};
-
-connectDB();
-
-//Routes
-app.use("/api", userRoutes);
-
-app.get("/", (req, res) => {
-	res.send("Hello Traveller...");
-});
-
-app.get("/health", (req, res) => {
-	res.status(200).send("ok");
-});
+app.use("/api/users", authRoutes);
 
 app.listen(PORT, () => {
 	console.log(`Server started at port ${PORT}`);

@@ -1,11 +1,6 @@
 [
-	{ "id": 1, "name": "Matěj Kurty" },
-	{ "id": 2, "name": "Jirka Faltin" },
-	{ "id": 3, "name": "Oleksandr Padalka" },
-	{ "id": 4, "name": "Jiří Faltin" },
-	{ "id": 5, "name": "Alex Padelka" },
-	{ "id": 6, "name": "Viktor Tomyšynec" },
-	{ "id": 7, "name": "Serhiy Tanchynets" },
-	{ "id": 8, "name": "Kristián Janko" },
-	{ "id": 9, "name": "Denisa Vojtíšková" }
+	{ "id": 1, "name": "Janko Kristián" },
+	{ "id": 2, "name": "Faltin Jiří" },
+	{ "id": 3, "name": "Vojtíšková Denisa" },
+	{ "id": 4, "name": "Kurty Matěj" }
 ]

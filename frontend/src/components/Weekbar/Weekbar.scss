@@ -1,0 +1,33 @@
+.weekbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.weekbar-container {
+	display: flex;
+	gap: 5px;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+.weekbar__day {
+	padding: 5px;
+	border-radius: 10px;
+	background: rgba(0, 0, 0, 0.05);
+}
+
+.weekbar__day--active {
+	background: rgb(0, 179, 255) !important;
+	color: #fff;
+}
+
+.weekbar__pdf {
+	// width: 100%;
+	flex-shrink: 0;
+	padding: 5px;
+	border-radius: 10px;
+	border: 2px solid red;
+	background: rgba(255, 0, 0, 0.1);
+	color: red;
+}
