@@ -58,7 +58,7 @@ const Sidebar = ({ user }) => {
 							<span className="avatar">
 								{user.name.split(" ")[0][0] + user.name.split(" ")[1][0]}
 							</span>
-							{user.name}
+							<span>{user.name}</span>
 						</NavLink>
 					);
 				})}

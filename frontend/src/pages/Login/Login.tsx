@@ -36,13 +36,17 @@ const Login = ({ setUser }: Loginrops) => {
 			);
 			localStorage.setItem("token", res.data.token);
 			setUser(res.data);
-			navigate("/");
+
+			setTimeout(() => {
+				navigate(`/users/${res.data.id}`);
+			}, 100);
 			// FIXME:
 		} catch (err) {
 			setError(err.response?.data.message);
 			console.error("Full Error Object:", err.response?.data.message);
 		}
 	};
+
 	return (
 		<main className="login">
 			<div className="login-container">
