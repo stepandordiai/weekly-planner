@@ -5,12 +5,19 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import "./Sidebar.scss";
 
-const Sidebar = () => {
+const Sidebar = ({ user }) => {
 	const [allUsers, setAllUsers] = useState<any[]>([]);
 
 	useEffect(() => {
 		const fetchAllUsers = async () => {
+			if (!user) {
+				setAllUsers([]);
+				return;
+			}
+
 			const token = localStorage.getItem("token");
+			if (!token) return;
+
 			try {
 				const res = await axios.get(
 					"https://weekly-planner-backend.onrender.com/api/users/all",
@@ -25,7 +32,10 @@ const Sidebar = () => {
 		};
 
 		fetchAllUsers();
-	}, []);
+	}, [user]);
+
+	// Only render sidebar if logged in and users exist
+	if (!user || allUsers.length === 0) return null;
 
 	return (
 		<div className="sidebar">

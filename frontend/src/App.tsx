@@ -15,8 +15,6 @@ function App() {
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
 
-	console.log(user);
-
 	useEffect(() => {
 		const fetchUser = async () => {
 			const token = localStorage.getItem("token");
@@ -49,7 +47,7 @@ function App() {
 			<div className="wrapper">
 				<Header user={user} setUser={setUser} />
 				<div className="wrapper-inner">
-					<Sidebar />
+					<Sidebar user={user} />
 					{/* <div style={{ display: "none" }} className="sidebar">
 					<NavLink to="/">Planner</NavLink>
 					<ul>

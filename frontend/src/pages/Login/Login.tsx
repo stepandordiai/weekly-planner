@@ -9,11 +9,11 @@ type User = {
 	username: string;
 };
 
-type Props = {
+type Loginrops = {
 	setUser: React.Dispatch<React.SetStateAction<User | null>>;
 };
 
-const Login = ({ setUser }: Props) => {
+const Login = ({ setUser }: Loginrops) => {
 	const navigate = useNavigate();
 
 	const [formData, setFormData] = useState({
@@ -21,14 +21,13 @@ const Login = ({ setUser }: Props) => {
 		password: "",
 	});
 
-	const handleChange = (e) => {
-		// TODO:
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 	};
 
 	const [error, setError] = useState("");
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
 			const res = await axios.post(
@@ -38,66 +37,58 @@ const Login = ({ setUser }: Props) => {
 			localStorage.setItem("token", res.data.token);
 			setUser(res.data);
 			navigate("/");
-		} catch (error) {
-			setError(error);
+			// FIXME:
+		} catch (err) {
+			setError(err.response?.data.message);
+			console.error("Full Error Object:", err.response?.data.message);
 		}
 	};
 	return (
 		<main className="login">
-			<div>
-				<h1 style={{ fontSize: "2rem", marginBottom: 20 }}>Log in</h1>
-				{error && <p>{error}</p>}
+			<div className="login-container">
+				<h1 style={{ fontSize: "2rem", marginBottom: 25 }}>Prihlasit se</h1>
+				{error && <p style={{ color: "red", marginBottom: 10 }}>{error}</p>}
 				{/* TODO: */}
-				<form action="" onSubmit={handleSubmit}>
+				<form className="login-form" action="" onSubmit={handleSubmit}>
 					<div
 						style={{
 							display: "flex",
 							flexDirection: "column",
-							marginBottom: 10,
 						}}
 					>
-						<label htmlFor="username">Username</label>
+						<label htmlFor="username">Uživatelské jméno</label>
 						<input
 							id="username"
-							className="input"
+							className="login__input"
 							type="text"
 							name="username"
 							value={formData.username}
 							onChange={handleChange}
-							placeholder="Enter your username"
+							placeholder="Zadejte své uživatelské jméno"
 							required
-							// TODO:
 							autoComplete="off"
 						/>
 					</div>
 					<div style={{ display: "flex", flexDirection: "column" }}>
-						<label htmlFor="password">Password</label>
+						<label htmlFor="password">Heslo</label>
 						<input
 							id="password"
-							className="input"
+							className="login__input"
 							type="password"
 							name="password"
 							value={formData.password}
 							onChange={handleChange}
-							placeholder="Enter your password"
+							placeholder="Zadejte své heslo"
 							required
 						/>
 					</div>
-					<button type="submit" className="login-btn">
-						Login
+					<button type="submit" className="login__btn">
+						Přihlásit se
 					</button>
 				</form>
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-						flexDirection: "column",
-					}}
-				>
-					<span className="login-line"></span>
-					<p style={{ marginBottom: 10 }}>Don't have an account?</p>
-					<NavLink className="login__link" to="/register">
+				<div style={{ marginTop: 25 }}>
+					<span>Don't have an account?</span>{" "}
+					<NavLink style={{ textDecoration: "underline" }} to="/register">
 						Create an account
 					</NavLink>
 				</div>

@@ -45,7 +45,9 @@ router.post("/login", async (req, res) => {
 		const user = await User.findOne({ username });
 
 		if (!user || !(await user.matchPassword(password))) {
-			return res.status(401).json({ message: "Invalid credentials" });
+			return res
+				.status(401)
+				.json({ message: "Neplatné uživatelské jméno nebo heslo" });
 		}
 		const token = generateToken(user._id);
 		res.status(200).json({
