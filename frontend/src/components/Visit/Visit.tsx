@@ -3,8 +3,8 @@ import ClockIcon from "../../icons/ClockIcon";
 import { useRef, useState } from "react";
 
 const Visit = () => {
-	const enterInput = useRef<HTMLSpanElement | null>(null);
-	const exitInput = useRef<HTMLSpanElement | null>(null);
+	const enterInput = useRef<HTMLInputElement | null>(null);
+	const exitInput = useRef<HTMLInputElement | null>(null);
 	const intervalRef = useRef<number>(null);
 	const [startActive, setStartActive] = useState(false);
 	const [timer, setTimer] = useState("00:00:00");
@@ -21,8 +21,8 @@ const Visit = () => {
 		const minutes = startTime.getMinutes().toString().padStart(2, "0");
 
 		setStartActive(true);
-		if (enterInput.current) {
-			enterInput.current.textContent = `${hours}:${minutes}`;
+		if (enterInput.current && !enterInput.current.value) {
+			enterInput.current.value = `${hours}:${minutes}`;
 		}
 
 		// Store the interval ID so you can stop it later!
@@ -61,8 +61,8 @@ const Visit = () => {
 		const endHours = endTime.getHours().toString().padStart(2, "0");
 		const endMinutes = endTime.getMinutes().toString().padStart(2, "0");
 
-		if (exitInput.current) {
-			exitInput.current.textContent = `${endHours}:${endMinutes}`;
+		if (exitInput.current && !exitInput.current.value) {
+			exitInput.current.value = `${endHours}:${endMinutes}`;
 		}
 	};
 
@@ -99,7 +99,8 @@ const Visit = () => {
 					</div>
 					<div className="visit-input-container">
 						<span>Prichod</span>
-						<span
+						<input
+							ref={enterInput}
 							style={{
 								border: "1px solid rgba(0, 0, 0, 0.2)",
 								borderRadius: 10,
@@ -107,14 +108,15 @@ const Visit = () => {
 								textAlign: "center",
 								minWidth: 80,
 							}}
-							ref={enterInput}
-						>
-							00:00
-						</span>
+							type="time"
+							disabled={startActive || isFinished}
+						/>
+						{/* <span ref={enterInput}>00:00</span> */}
 					</div>
 					<div className="visit-input-container">
 						<span>Odchod</span>
-						<span
+						<input
+							ref={exitInput}
 							style={{
 								border: "1px solid rgba(0, 0, 0, 0.2)",
 								borderRadius: 10,
@@ -122,10 +124,9 @@ const Visit = () => {
 								textAlign: "center",
 								minWidth: 80,
 							}}
-							ref={exitInput}
-						>
-							00:00
-						</span>
+							type="time"
+							disabled={!startActive}
+						/>
 					</div>
 					<div className="visit-input-container">
 						<span>Odpracovano</span>
