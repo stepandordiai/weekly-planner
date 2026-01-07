@@ -39,81 +39,69 @@ const Register = ({ setUser }: Props) => {
 			);
 			localStorage.setItem("token", res.data.token);
 			setUser(res.data);
-			console.log(res.data);
 			navigate("/");
+			// TODO: LEARN THIS
 		} catch (err) {
-			// This line is the key to seeing the REAL error from your Express server
-			const message = "Registration failed";
-			setError(message);
-			console.error("Full Error Object:", err.response?.data);
+			setError(err.response?.data.message);
+			console.error("Full Error Object:", err.response?.data.message);
 		}
 	};
 	return (
 		<div className="register">
-			<div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md border border-gray-200">
-				<h1 style={{ fontSize: "2rem", marginBottom: 20 }}>
-					Create an account
-				</h1>
-				{error && <p>{error}</p>}
+			<div className="register-container">
+				<h1 style={{ fontSize: "2rem", marginBottom: 25 }}>Registrace</h1>
+				{error && <p style={{ color: "red", marginBottom: 10 }}>{error}</p>}
 				{/* TODO: */}
-				<form action="" onSubmit={handleSubmit}>
-					<div className="input-container">
-						<label htmlFor="name">Name</label>
+				<form className="register-form" action="" onSubmit={handleSubmit}>
+					<div className="register-input-container">
+						<label htmlFor="name">Jméno a příjmení</label>
 						<input
 							id="name"
-							className="input"
+							className="register__input"
 							type="text"
 							name="name"
 							value={formData.name}
 							onChange={handleChange}
-							placeholder="Enter your name"
+							placeholder="Zadejte své jméno a příjmení"
 							required
 							// TODO:
 							autoComplete="off"
 						/>
 					</div>
-					<div className="input-container">
-						<label htmlFor="username">Username</label>
+					<div className="register-input-container">
+						<label htmlFor="username">Uživatelské jméno</label>
 						<input
 							id="username"
-							className="input"
+							className="register__input"
 							type="text"
 							name="username"
 							value={formData.username}
 							onChange={handleChange}
-							placeholder="Enter your username"
+							placeholder="Zadejte své uživatelské jméno"
 							required
 							// TODO:
 							autoComplete="off"
 						/>
 					</div>
-					<div className="input-container">
-						<label htmlFor="password">Password</label>
+					<div className="register-input-container">
+						<label htmlFor="password">Heslo</label>
 						<input
-							className="input"
+							className="register__input"
 							id="password"
 							type="password"
 							name="password"
 							value={formData.password}
 							onChange={handleChange}
-							placeholder="Enter your password"
+							placeholder="Zadejte své heslo"
 							required
 						/>
 					</div>
-					<button className="register__btn">Register</button>
+					<button className="register__btn">Vytvořit účet</button>
 				</form>
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-						flexDirection: "column",
-					}}
-				>
-					<span className="login-line"></span>
-					<span style={{ marginBottom: 10 }}>Already have an account?</span>
+				<div style={{ marginTop: 25 }}>
+					<span>Už máte účet?</span>{" "}
 					<NavLink style={{ textDecoration: "underline" }} to="/login">
-						Log in
+						Přihlaste se
 					</NavLink>
 				</div>
 			</div>

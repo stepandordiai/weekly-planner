@@ -1,0 +1,50 @@
+.register {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	padding: 10px;
+}
+
+.register-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+	padding: 25px;
+	width: 100%;
+	max-width: 500px;
+}
+
+.register-form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+}
+
+.register-input-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.register__input {
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+	padding: 10px;
+
+	&:focus {
+		border: 1px solid rgba(0, 0, 0);
+		outline: none;
+	}
+}
+
+.register__btn {
+	background: var(--accent-clr);
+	padding: 10px;
+	color: #fff;
+	border-radius: 10px;
+	width: 100%;
+}
