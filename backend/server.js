@@ -33,6 +33,11 @@ app.use(
 
 app.use("/api/users", authRoutes);
 
+app.get("/health", (req, res) => {
+	res.status(200).write("ok");
+	res.end();
+});
+
 app.listen(PORT, () => {
 	console.log(`Server started at port ${PORT}`);
 });
