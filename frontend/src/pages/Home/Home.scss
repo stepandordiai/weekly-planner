@@ -15,12 +15,24 @@
 }
 
 .home {
-	flex-grow: 1;
-	flex-shrink: 0;
-	height: 100dvh;
-	overflow-y: scroll;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow-y: auto;
 	background: rgba(0, 0, 0, 0.025);
 	padding: 10px;
+	width: 100%;
+}
+
+.home__link {
+	padding: 10px;
+	border-radius: 10px;
+	background: var(--accent-clr);
+	color: #fff;
+
+	&:nth-last-child(1) {
+		background: #000;
+	}
 }
 
 .home-user-container {
