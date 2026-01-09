@@ -8,8 +8,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import UserPage from "./pages/UserPage/UserPage";
-import "./scss/App.scss";
 import { useAuth } from "./context/AuthContext";
+import "./scss/App.scss";
 
 function App() {
 	const { user, setUser } = useAuth();
@@ -22,7 +22,7 @@ function App() {
 			if (token) {
 				try {
 					const response = await axios.get(
-						"https://weekly-planner-backend.onrender.com/api/users/me",
+						`${import.meta.env.VITE_API_URL}/api/users/me`,
 						{
 							headers: { Authorization: `Bearer ${token}` },
 						}
@@ -32,9 +32,10 @@ function App() {
 					// TODO:
 					setError(err instanceof Error ? err.message : "An error occurred");
 					localStorage.removeItem("token");
+				} finally {
+					setIsLoading(false);
 				}
 			}
-			setIsLoading(false);
 		};
 
 		fetchUser();
@@ -49,27 +50,6 @@ function App() {
 				<Header />
 				<div className="wrapper-inner">
 					<Sidebar user={user} />
-					{/* <div style={{ display: "none" }} className="sidebar">
-					<NavLink to="/">Planner</NavLink>
-					<ul>
-						{usersData.map((user) => {
-							return (
-								<li key={user.id}>
-									<NavLink
-										className={({ isActive }) =>
-											classNames("sidebar__link", {
-												"sidebar__link--active": isActive,
-											})
-										}
-										to={`/user-page/${user.id}`}
-									>
-										{user.name}
-									</NavLink>
-								</li>
-							);
-						})}
-					</ul>
-				</div> */}
 					<Routes>
 						<Route path="/" element={<Home user={user} error={error} />} />
 						<Route path="/login" element={<Login />} />
@@ -78,7 +58,6 @@ function App() {
 							element={user ? <Navigate to="/" /> : <Register />}
 						/>
 						<Route path="/users/:id" element={<UserPage />} />
-						{/* <Route path="*" element={<NotFound />} /> */}
 					</Routes>
 				</div>
 			</div>
