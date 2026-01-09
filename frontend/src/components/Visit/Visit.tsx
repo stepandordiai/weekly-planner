@@ -144,11 +144,7 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 					<div className="visit-input-container">
 						<span>Datum</span>
 						<input
-							style={{
-								border: "1px solid rgba(0, 0, 0, 0.2)",
-								borderRadius: 10,
-								padding: 5,
-							}}
+							className="visit__input"
 							value={shiftDate}
 							onChange={(e) => setShiftDate(e.target.value)}
 							type="date"
@@ -160,13 +156,12 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 							onChange={(e) => setStartTime(e.target.value)}
 							onBlur={upsertWorkShift}
 							value={startTime}
-							style={{
-								border: "1px solid rgba(0, 0, 0, 0.2)",
-								borderRadius: 10,
-								padding: 5,
-								textAlign: "center",
-								minWidth: 80,
-							}}
+							className="visit__input"
+							style={
+								!canEdit
+									? { background: "var(--bg-clr)" }
+									: { background: "#fff" }
+							}
 							disabled={!canEdit}
 							type="time"
 						/>
@@ -176,14 +171,13 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 						<input
 							onChange={(e) => setEndTime(e.target.value)}
 							onBlur={upsertWorkShift}
+							className="visit__input"
+							style={
+								!canEdit
+									? { background: "var(--bg-clr)" }
+									: { background: "#fff" }
+							}
 							value={endTime}
-							style={{
-								border: "1px solid rgba(0, 0, 0, 0.2)",
-								borderRadius: 10,
-								padding: 5,
-								textAlign: "center",
-								minWidth: 80,
-							}}
 							disabled={!canEdit}
 							type="time"
 						/>
@@ -195,14 +189,13 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 						<input
 							onChange={(e) => setPauseTime(e.target.value)}
 							onBlur={upsertWorkShift}
+							className="visit__input"
+							style={
+								!canEdit
+									? { background: "var(--bg-clr)" }
+									: { background: "#fff" }
+							}
 							value={pauseTime}
-							style={{
-								border: "1px solid rgba(0, 0, 0, 0.2)",
-								borderRadius: 10,
-								padding: 5,
-								textAlign: "center",
-								minWidth: 80,
-							}}
 							disabled={!canEdit}
 							type="time"
 						/>
@@ -211,12 +204,11 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 						<span>Odpracovano</span>
 						<p
 							style={{
-								border: "1px solid rgba(0, 0, 0, 0.2)",
+								border: "var(--secondary-border)",
 								background: "var(--bg-clr)",
-								borderRadius: 10,
+								borderRadius: 5,
 								padding: 5,
 								textAlign: "center",
-								minWidth: 80,
 							}}
 						>
 							{total}

@@ -4,6 +4,12 @@
 	width: 100%;
 }
 
+.visit__input {
+	border: var(--secondary-border);
+	border-radius: 5px;
+	padding: 5px;
+}
+
 .visit__status-indicator {
 	width: 16px;
 	aspect-ratio: 1/1;
