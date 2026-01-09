@@ -3,22 +3,16 @@ import { useEffect, useState } from "react";
 import timeToMinutes from "../../utils/timeToMinutes";
 import axios from "axios";
 import "./Visit.scss";
-import { useParams } from "react-router-dom";
-
-// const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
 const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
-	const { id } = useParams();
-
 	const [data, setData] = useState(null);
+
 	const [startTime, setStartTime] = useState("");
 	const [endTime, setEndTime] = useState("");
 	const [pauseTime, setPauseTime] = useState("");
 	const [total, setTotal] = useState("00:00");
 	const [error, setError] = useState(null);
-
-	// FIXME:
-	console.log(error);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		setStartTime("");
@@ -27,10 +21,13 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 		setTotal("00:00");
 
 		const fetchWorkShift = async () => {
+			setLoading(true);
 			try {
 				const token = localStorage.getItem("token");
 				const response = await axios.get(
-					`https://weekly-planner-backend.onrender.com/api/work/${shiftDate}?userId=${userId}`,
+					`${
+						import.meta.env.VITE_API_URL
+					}/api/work/${shiftDate}?userId=${userId}`,
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,
@@ -39,13 +36,15 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 				);
 
 				setData(response.data);
-			} catch (err: any) {
+			} catch (error) {
 				// If 404, treat as empty shift
-				if (err.response?.status === 404) {
+				if (error.response?.status === 404) {
 					setData({ startTime: "", endTime: "", pauseTime: "" });
 				} else {
-					setError(err.response?.data?.message || "Something went wrong");
+					setError(error.response?.data?.message || "Něco se pokazilo");
 				}
+			} finally {
+				setLoading(false);
 			}
 		};
 
@@ -75,42 +74,56 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 		}
 	}, [startTime, endTime, pauseTime, shiftDate]);
 
+	const upsertWorkShift = async () => {
+		setLoading(true);
+		try {
+			const token = localStorage.getItem("token");
+
+			const response = await axios.post(
+				`${import.meta.env.VITE_API_URL}/api/work`,
+				{
+					date: shiftDate,
+					startTime,
+					endTime,
+					pauseTime,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			console.log(response.data);
+		} catch (err: any) {
+			const message = err.response?.data?.message || "Something went wrong";
+			setError(message);
+			console.error("Full Error Object:", err.response);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		// Only auto-save if at least one input has a value
 		if (!startTime && !endTime && !pauseTime) return;
-		const upsertWorkShift = async () => {
-			try {
-				const token = localStorage.getItem("token");
 
-				const response = await axios.post(
-					"https://weekly-planner-backend.onrender.com/api/work",
-					{
-						date: shiftDate,
-						startTime,
-						endTime,
-						pauseTime,
-					},
-					{
-						headers: {
-							Authorization: `Bearer ${token}`, // <--- this is correct
-							"Content-Type": "application/json",
-						},
-					}
-				);
+		const timeout = setTimeout(() => {
+			upsertWorkShift();
+		}, 1000);
 
-				console.log(response.data);
-			} catch (err: any) {
-				const message = err.response?.data?.message || "Something went wrong";
-				setError(message);
-				console.error("Full Error Object:", err.response);
-			}
-		};
-
-		upsertWorkShift();
+		return () => clearTimeout(timeout);
 	}, [startTime, endTime, pauseTime]);
 
 	if (!currentUser) return <p>Loading...</p>; // wait for context to hydrate
-	const canEdit = currentUser._id === id;
+	const canEdit = currentUser._id === userId;
+
+	const status = (): string => {
+		if (error) return error;
+		if (loading) return "Aktualizace...";
+		else return "Aktualizováno";
+	};
 
 	return (
 		<div className="visit">
@@ -145,6 +158,7 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 						<span>Prichod</span>
 						<input
 							onChange={(e) => setStartTime(e.target.value)}
+							onBlur={upsertWorkShift}
 							value={startTime}
 							style={{
 								border: "1px solid rgba(0, 0, 0, 0.2)",
@@ -161,6 +175,7 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 						<span>Odchod</span>
 						<input
 							onChange={(e) => setEndTime(e.target.value)}
+							onBlur={upsertWorkShift}
 							value={endTime}
 							style={{
 								border: "1px solid rgba(0, 0, 0, 0.2)",
@@ -179,6 +194,7 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 						<span>Pause</span>
 						<input
 							onChange={(e) => setPauseTime(e.target.value)}
+							onBlur={upsertWorkShift}
 							value={pauseTime}
 							style={{
 								border: "1px solid rgba(0, 0, 0, 0.2)",
@@ -208,6 +224,22 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 					</div>
 				</div>
 			</div>
+			<p
+				style={{
+					display: "flex",
+					justifyContent: "flex-start",
+					alignItems: "center",
+					gap: 5,
+					marginTop: 10,
+				}}
+			>
+				<span
+					className={`visit__status-indicator ${
+						loading ? "status--loading" : error ? "status--error" : "status--ok"
+					}`}
+				></span>
+				<span style={{ fontSize: "0.8rem" }}>{status()}</span>
+			</p>
 		</div>
 	);
 };

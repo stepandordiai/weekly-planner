@@ -14,7 +14,7 @@ import "./scss/App.scss";
 function App() {
 	const { user, setUser } = useAuth();
 	const [error, setError] = useState("");
-	const [isLoading, setIsLoading] = useState(true);
+	// const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchUser = async () => {
@@ -33,7 +33,7 @@ function App() {
 					setError(err instanceof Error ? err.message : "An error occurred");
 					localStorage.removeItem("token");
 				} finally {
-					setIsLoading(false);
+					// setIsLoading(false);
 				}
 			}
 		};
@@ -41,9 +41,9 @@ function App() {
 		fetchUser();
 	}, []);
 
-	if (isLoading && !user) {
-		return <div>Loading...</div>;
-	}
+	// if (isLoading && !user) {
+	// 	return <div>Loading...</div>;
+	// }
 	return (
 		<Router>
 			<div className="wrapper">
