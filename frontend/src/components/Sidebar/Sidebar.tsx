@@ -3,9 +3,11 @@ import TeamIcon from "../../icons/TeamIcon";
 import classNames from "classnames";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import "./Sidebar.scss";
 
-const Sidebar = ({ user }) => {
+const Sidebar = () => {
+	const { user } = useAuth();
 	const [allUsers, setAllUsers] = useState<any[]>([]);
 
 	useEffect(() => {

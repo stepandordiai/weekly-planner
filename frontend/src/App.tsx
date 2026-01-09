@@ -49,9 +49,9 @@ function App() {
 			<div className="wrapper">
 				<Header />
 				<div className="wrapper-inner">
-					<Sidebar user={user} />
+					<Sidebar />
 					<Routes>
-						<Route path="/" element={<Home user={user} error={error} />} />
+						<Route path="/" element={<Home error={error} />} />
 						<Route path="/login" element={<Login />} />
 						<Route
 							path="/register"

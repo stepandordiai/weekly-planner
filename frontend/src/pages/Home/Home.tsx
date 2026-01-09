@@ -1,7 +1,10 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./Home.scss";
 
-const Home = ({ user, error }) => {
+const Home = ({ error }) => {
+	const { user } = useAuth();
+
 	return (
 		<>
 			<main className="home">
