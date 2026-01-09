@@ -9,7 +9,7 @@ const emptyInput = () => ({
 	time: "",
 });
 
-const Responsibilities = ({ shiftDate, userId }) => {
+const Responsibilities = ({ shiftDate, userId, currentUser }) => {
 	// TODO: LEARN THIS
 	const [list, setList] = useState([emptyInput()]);
 
@@ -73,6 +73,9 @@ const Responsibilities = ({ shiftDate, userId }) => {
 		);
 	};
 
+	if (!currentUser) return <p>Loading...</p>; // wait for context to hydrate
+	const canEdit = currentUser._id === userId;
+
 	return (
 		<div className="responsibilities">
 			<div
@@ -92,40 +95,43 @@ const Responsibilities = ({ shiftDate, userId }) => {
 					return (
 						<div key={item.id} style={{ display: "flex", gap: 5 }}>
 							<div className="responsibilities-input-container">
-								{/* <p>Popis prace</p> */}
 								<input
 									onChange={(e) =>
 										handleChangeInput(item.id, e.target.name, e.target.value)
 									}
 									className="responsibilities__input"
-									key={item.id}
+									style={
+										!canEdit
+											? { background: "var(--bg-clr)" }
+											: { background: "#fff" }
+									}
 									type="text"
 									name="task"
 									value={item.task}
 									placeholder="Write down your task"
 									onBlur={() => saveData(shiftDate)}
+									disabled={!canEdit}
 								/>
 							</div>
 							<div className="responsibilities-input-container">
-								{/* <label htmlFor="djfufu">Straveny cas</label> */}
 								<input
 									onChange={(e) =>
 										handleChangeInput(item.id, e.target.name, e.target.value)
 									}
 									value={item.time}
 									className="responsibilities__input"
+									style={
+										!canEdit
+											? { background: "var(--bg-clr)" }
+											: { background: "#fff" }
+									}
 									type="time"
 									name="time"
 									id="djfufu"
 									onBlur={() => saveData(shiftDate)}
+									disabled={!canEdit}
 								/>
 							</div>
-							{/* <button
-								onClick={() => handleRemoveInput(item.id)}
-								disabled={list.length === 1}
-							>
-								Remove
-							</button> */}
 						</div>
 					);
 				})}

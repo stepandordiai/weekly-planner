@@ -25,7 +25,7 @@ const UserPage = () => {
 				shiftDate={shiftDate}
 				setShiftDate={setShiftDate}
 			/>
-			<Responsibilities shiftDate={shiftDate} userId={id} />
+			<Responsibilities shiftDate={shiftDate} userId={id} currentUser={user} />
 		</main>
 	);
 };
