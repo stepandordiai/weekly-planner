@@ -6,44 +6,65 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+// import { Navigate } from "react-router-dom";
 import UserPage from "./pages/UserPage/UserPage";
-import { useAuth } from "./context/AuthContext";
+// import { useAuth } from "./context/AuthContext";
+import Preload from "./components/Preload/Preload";
 import "./scss/App.scss";
 
 function App() {
-	const { user, setUser } = useAuth();
+	// const { user, setUser } = useAuth();
 	const [error, setError] = useState("");
-	// const [isLoading, setIsLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
+	const [preloader, setPreloader] = useState(true);
+
+	// useEffect(() => {
+	// 	const fetchUser = async () => {
+	// 		const token = localStorage.getItem("token");
+	// 		if (token) {
+	// 			try {
+	// 				const response = await axios.get(
+	// 					`${import.meta.env.VITE_API_URL}/api/users/me`,
+	// 					{
+	// 						headers: { Authorization: `Bearer ${token}` },
+	// 					}
+	// 				);
+	// 				setUser(response.data);
+	// 			} catch (err) {
+	// 				// TODO:
+	// 				setError(err instanceof Error ? err.message : "An error occurred");
+	// 				localStorage.removeItem("token");
+	// 			} finally {
+	// 				// setIsLoading(false);
+	// 			}
+	// 		}
+	// 	};
+
+	// 	fetchUser();
+	// }, []);
 
 	useEffect(() => {
-		const fetchUser = async () => {
-			const token = localStorage.getItem("token");
-			if (token) {
-				try {
-					const response = await axios.get(
-						`${import.meta.env.VITE_API_URL}/api/users/me`,
-						{
-							headers: { Authorization: `Bearer ${token}` },
-						}
-					);
-					setUser(response.data);
-				} catch (err) {
-					// TODO:
-					setError(err instanceof Error ? err.message : "An error occurred");
-					localStorage.removeItem("token");
-				} finally {
-					// setIsLoading(false);
-				}
+		const wakeUpApi = async () => {
+			setLoading(true);
+			try {
+				await new Promise((resolve) => setTimeout(resolve, 1000));
+				await axios.get(`${import.meta.env.VITE_API_URL}/health`);
+			} catch (error) {
+				setError(error);
+			} finally {
+				setLoading(false);
+				await new Promise((resolve) => setTimeout(resolve, 500));
+				setPreloader(false);
 			}
 		};
 
-		fetchUser();
+		wakeUpApi();
 	}, []);
 
-	// if (isLoading && !user) {
-	// 	return <div>Loading...</div>;
-	// }
+	if (preloader) {
+		return <Preload loading={loading} />;
+	}
+
 	return (
 		<Router>
 			<div className="wrapper">
@@ -53,10 +74,7 @@ function App() {
 					<Routes>
 						<Route path="/" element={<Home error={error} />} />
 						<Route path="/login" element={<Login />} />
-						<Route
-							path="/register"
-							element={user ? <Navigate to="/" /> : <Register />}
-						/>
+						<Route path="/register" element={<Register />} />
 						<Route path="/users/:id" element={<UserPage />} />
 					</Routes>
 				</div>

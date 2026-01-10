@@ -1,0 +1,29 @@
+.preload {
+	position: fixed;
+	inset: 0px;
+	background: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.preload__indicator {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	background: var(--bg-clr);
+	width: min(100%, 200px);
+	padding: 5px;
+	border-radius: 5px;
+	border: 2px solid black;
+	overflow: hidden;
+}
+
+.preload__indicator-progress {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	background: #000;
+	z-index: -1;
+}
