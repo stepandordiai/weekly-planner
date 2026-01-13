@@ -5,20 +5,34 @@ import Plan from "../models/Plan.js";
 
 const router = express.Router();
 
-router.post("/responsibilities/plan", protect, async (req, res) => {
+router.get("/responsibilities/plan", protect, async (req, res) => {
 	try {
-		const { task, executor, priority } = req.body;
-
-		const plan = await Plan.findOne([], task, executor, priority, {
-			new: true,
-			upsert: true,
-		});
-
-		if (plan) {
-		}
+		// This returns [ {task: '...'}, {task: '...'} ]
+		const plan = await Plan.find({});
 
 		res.status(200).json(plan);
-	} catch (error) {}
+	} catch (error) {
+		res.status(500).json({ message: "Server error" });
+	}
+});
+
+router.put("/responsibilities/plan", protect, async (req, res) => {
+	try {
+		const planArray = req.body; // Your array from frontend
+
+		// 1. Delete everything currently in the Plan collection
+		await Plan.deleteMany({});
+
+		// 2. Insert the new array (only if it has items)
+		let savedPlan = [];
+		if (planArray.length > 0) {
+			savedPlan = await Plan.insertMany(planArray);
+		}
+
+		res.status(200).json(savedPlan);
+	} catch (error) {
+		res.status(500).json({ message: "Chyba při ukládání plánu" });
+	}
 });
 
 router.post("/", protect, async (req, res) => {

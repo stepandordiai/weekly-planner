@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import timeToMinutes from "../../utils/timeToMinutes";
 import axios from "axios";
 import "./Visit.scss";
+import StatusIndicator from "../StatusIndicator/StatusIndicator";
 
 const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 	const [data, setData] = useState(null);
@@ -119,12 +120,6 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 	if (!currentUser) return <p>Loading...</p>; // wait for context to hydrate
 	const canEdit = currentUser._id === userId;
 
-	const status = (): string => {
-		if (error) return error;
-		if (loading) return "Aktualizace...";
-		else return "Aktualizováno";
-	};
-
 	return (
 		<div className="visit">
 			<p
@@ -216,22 +211,7 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate }) => {
 					</div>
 				</div>
 			</div>
-			<p
-				style={{
-					display: "flex",
-					justifyContent: "flex-start",
-					alignItems: "center",
-					gap: 5,
-					marginTop: 10,
-				}}
-			>
-				<span
-					className={`visit__status-indicator ${
-						loading ? "status--loading" : error ? "status--error" : "status--ok"
-					}`}
-				></span>
-				<span style={{ fontSize: "0.8rem" }}>{status()}</span>
-			</p>
+			<StatusIndicator loading={loading} error={error} />
 		</div>
 	);
 };

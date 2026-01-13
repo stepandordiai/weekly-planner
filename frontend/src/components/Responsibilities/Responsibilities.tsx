@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Responsibilities.scss";
 import classNames from "classnames";
 import ResponsibilityIcon from "../../icons/ResponsibilityIcon";
+import StatusIndicator from "../StatusIndicator/StatusIndicator";
 
 const weekData = [
 	"Pondělí",
@@ -237,12 +238,6 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 		}
 	};
 
-	const status = (): string => {
-		if (error) return error;
-		if (loading) return "Aktualizace...";
-		else return "Aktualizováno";
-	};
-
 	if (!currentUser) return <p>Loading...</p>; // wait for context to hydrate
 	const canEdit = currentUser._id === userId;
 
@@ -409,22 +404,7 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 					);
 				})}
 			</div>
-			<p
-				style={{
-					display: "flex",
-					justifyContent: "flex-start",
-					alignItems: "center",
-					gap: 5,
-					marginTop: 10,
-				}}
-			>
-				<span
-					className={`visit__status-indicator ${
-						loading ? "status--loading" : error ? "status--error" : "status--ok"
-					}`}
-				></span>
-				<span style={{ fontSize: "0.8rem" }}>{status()}</span>
-			</p>
+			<StatusIndicator error={error} loading={loading} />
 		</div>
 	);
 };

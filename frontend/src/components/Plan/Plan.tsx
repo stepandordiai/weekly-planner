@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import "./Plan.scss";
 import axios from "axios";
+import classNames from "classnames";
+import StatusIndicator from "../StatusIndicator/StatusIndicator";
+import "./Plan.scss";
 
 const emptyInput = () => ({
 	// TODO: LEARN THIS
@@ -13,6 +15,7 @@ const emptyInput = () => ({
 const Plan = ({ allUsers }) => {
 	const [plan, setPlan] = useState([emptyInput(), emptyInput(), emptyInput()]);
 	const [error, setError] = useState(null);
+	const [loading, setLoading] = useState(false);
 
 	const handleAddInput = () => {
 		setPlan((prev) => [...prev, emptyInput()]);
@@ -24,16 +27,50 @@ const Plan = ({ allUsers }) => {
 		);
 	};
 
-	console.log(plan);
-
 	useEffect(() => {
-		const fetchPlanData = () => {};
+		const fetchPlanData = async () => {
+			setError(null);
+			setLoading(true);
+			const token = localStorage.getItem("token");
+
+			try {
+				const res = await axios.get(
+					`${import.meta.env.VITE_API_URL}/api/work/responsibilities/plan`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
+				);
+
+				if (res.data && res.data.length > 0) {
+					setPlan(res.data);
+				} else {
+					setPlan([emptyInput()]);
+				}
+			} catch (error) {
+				setError(error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchPlanData();
 	}, []);
 
 	const savePlanData = async () => {
+		setError(null);
+		setLoading(true);
 		const token = localStorage.getItem("token");
 
 		try {
+			// TODO: LEARN THIS
+			for (const item of plan) {
+				if ((item.task && !item.executor) || (!item.task && item.executor)) {
+					throw new Error(
+						"Pokud vyplníte úkol, musíte uvést i řešitele (a naopak)."
+					);
+				}
+			}
+
 			await axios.put(
 				`${import.meta.env.VITE_API_URL}/api/work/responsibilities/plan`,
 				plan,
@@ -42,7 +79,10 @@ const Plan = ({ allUsers }) => {
 				}
 			);
 		} catch (error) {
-			setError(error);
+			// TODO: Catch throw new Error
+			setError(error.message);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -61,10 +101,9 @@ const Plan = ({ allUsers }) => {
 						display: "flex",
 						alignItems: "center",
 						gap: 5,
-						marginBottom: 10,
 					}}
 				>
-					Strucny popis prace
+					Seznam úkolů / Plán na další dny
 				</p>
 				<button onClick={handleAddInput} className="responsibilities__btn">
 					Pridat
@@ -83,6 +122,8 @@ const Plan = ({ allUsers }) => {
 									handlePlanInput(item.id, e.target.name, e.target.value)
 								}
 								value={item.task}
+								placeholder="Vypracujte plán práce a vyberte zhotovitele."
+								onBlur={savePlanData}
 							/>
 							<select
 								className="plan__input"
@@ -92,6 +133,7 @@ const Plan = ({ allUsers }) => {
 									handlePlanInput(item.id, e.target.name, e.target.value)
 								}
 								value={item.executor}
+								onBlur={savePlanData}
 							>
 								<option value="">Not selected</option>
 								{allUsers.map((user) => {
@@ -99,15 +141,20 @@ const Plan = ({ allUsers }) => {
 								})}
 							</select>
 							<select
-								className="plan__input"
+								className={classNames("plan__input", {
+									"priority--low": item.priority === "Nizká",
+									"priority--medium": item.priority === "Střední",
+									"priority--high": item.priority === "Vysoká",
+								})}
 								name="priority"
 								id=""
 								onChange={(e) =>
 									handlePlanInput(item.id, e.target.name, e.target.value)
 								}
 								value={item.priority}
+								onBlur={savePlanData}
 							>
-								<option style={{ backgroundColor: "green" }} value="Nizká">
+								<option style={{ background: "green" }} value="Nizká">
 									Nizká
 								</option>
 								<option value="Střední">Střední</option>
@@ -117,6 +164,7 @@ const Plan = ({ allUsers }) => {
 					);
 				})}
 			</div>
+			<StatusIndicator error={error} loading={loading} />
 		</section>
 	);
 };
