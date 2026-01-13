@@ -97,6 +97,7 @@ const Plan = ({ allUsers }) => {
 
 	const removeItem = (id) => {
 		setPlan((prev) => prev.filter((item) => item.id !== id));
+		savePlanData();
 	};
 
 	useEffect(() => {
