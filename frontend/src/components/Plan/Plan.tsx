@@ -97,7 +97,6 @@ const Plan = ({ allUsers }) => {
 
 	const removeItem = (id) => {
 		setPlan((prev) => prev.filter((item) => item.id !== id));
-		savePlanData();
 	};
 
 	useEffect(() => {
@@ -112,6 +111,10 @@ const Plan = ({ allUsers }) => {
 
 			return updated;
 		});
+	}, [plan.length]);
+
+	useEffect(() => {
+		savePlanData();
 	}, [plan]);
 
 	return (
