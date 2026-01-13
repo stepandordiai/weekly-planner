@@ -41,11 +41,18 @@ const Plan = ({ allUsers }) => {
 					}
 				);
 
-				if (res.data && res.data.length > 0) {
-					setPlan(res.data);
-				} else {
-					setPlan([emptyInput()]);
-				}
+				const updated = res.data.map((item) => ({
+					id: crypto.randomUUID(),
+					task: item.task || "",
+					executor: item.executor || "",
+					priority: item.priority || "",
+				}));
+
+				setPlan(
+					updated.length > 0
+						? updated
+						: [emptyInput(), emptyInput(), emptyInput()]
+				);
 			} catch (error) {
 				setError(error);
 			} finally {
@@ -55,6 +62,8 @@ const Plan = ({ allUsers }) => {
 
 		fetchPlanData();
 	}, []);
+
+	console.log(plan);
 
 	const savePlanData = async () => {
 		setError(null);
@@ -86,6 +95,24 @@ const Plan = ({ allUsers }) => {
 		}
 	};
 
+	const removeItem = (id) => {
+		setPlan((prev) => prev.filter((item) => item.id !== id));
+	};
+
+	useEffect(() => {
+		if (plan.length >= 4) return;
+
+		setPlan((prev) => {
+			const updated = [...prev];
+
+			while (updated.length < 3) {
+				updated.push(emptyInput());
+			}
+
+			return updated;
+		});
+	}, [plan]);
+
 	return (
 		<section className="plan">
 			<div
@@ -113,7 +140,7 @@ const Plan = ({ allUsers }) => {
 			<div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
 				{plan.map((item) => {
 					return (
-						<div style={{ display: "flex", gap: 5 }}>
+						<div key={item.id} style={{ display: "flex", gap: 5 }}>
 							<input
 								className="plan__input"
 								type="text"
@@ -137,7 +164,11 @@ const Plan = ({ allUsers }) => {
 							>
 								<option value="">Not selected</option>
 								{allUsers.map((user) => {
-									return <option value={user.name}>{user.name}</option>;
+									return (
+										<option key={user._id} value={user.name}>
+											{user.name}
+										</option>
+									);
 								})}
 							</select>
 							<select
@@ -160,6 +191,12 @@ const Plan = ({ allUsers }) => {
 								<option value="Střední">Střední</option>
 								<option value="Vysoká">Vysoká</option>
 							</select>
+							<button
+								onClick={() => removeItem(item.id)}
+								className="plan__remove-btn"
+							>
+								X
+							</button>
 						</div>
 					);
 				})}

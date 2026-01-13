@@ -20,14 +20,21 @@ router.put("/responsibilities/plan", protect, async (req, res) => {
 	try {
 		const planArray = req.body; // Your array from frontend
 
-		// 1. Delete everything currently in the Plan collection
+		const validData = planArray.filter(
+			(item) =>
+				(item.task && item.task.trim() !== "") ||
+				(item.executor && item.executor.trim() !== "")
+		);
+
 		await Plan.deleteMany({});
 
-		// 2. Insert the new array (only if it has items)
-		let savedPlan = [];
-		if (planArray.length > 0) {
-			savedPlan = await Plan.insertMany(planArray);
+		// 2. Decide what to do if no valid data exists
+		if (validData.length === 0) {
+			return res.status(200).json([]);
 		}
+
+		// 3. Replace old data with new valid data
+		const savedPlan = await Plan.insertMany(validData);
 
 		res.status(200).json(savedPlan);
 	} catch (error) {
