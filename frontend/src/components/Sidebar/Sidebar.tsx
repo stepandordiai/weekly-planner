@@ -11,10 +11,11 @@ const Sidebar = ({ allUsers }) => {
 	if (!user || allUsers.length === 0) return null;
 
 	return (
-		<div className="sidebar">
-			<div style={{ display: "flex", alignItems: "center" }}>
-				<TeamIcon size={16} />
-				<span>Tym</span>
+		// TODO: aside tag is for sidebars
+		<aside className="sidebar">
+			<div className="container-title">
+				<TeamIcon size={20} />
+				<h2>Tým</h2>
 			</div>
 			<div className="sidebar-container">
 				{allUsers.map((user) => {
@@ -36,7 +37,7 @@ const Sidebar = ({ allUsers }) => {
 					);
 				})}
 			</div>
-		</div>
+		</aside>
 	);
 };
 

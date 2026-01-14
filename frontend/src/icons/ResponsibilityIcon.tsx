@@ -1,4 +1,6 @@
-const ResponsibilityIcon = ({ size = 16 }) => {
+import type { Icon } from "../interfaces";
+
+const ResponsibilityIcon = ({ size = 16 }: Icon) => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"

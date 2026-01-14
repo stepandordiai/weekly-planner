@@ -33,6 +33,14 @@ html {
 	padding: 5px;
 }
 
+.container-title {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 5px;
+	font-weight: 600;
+}
+
 // .sidebar {
 // 	// position: fixed;
 // 	// top: 0;
