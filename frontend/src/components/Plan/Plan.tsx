@@ -4,6 +4,7 @@ import classNames from "classnames";
 import StatusIndicator from "../StatusIndicator/StatusIndicator";
 import ListTaskIcon from "../../icons/ListTaskIcon";
 import "./Plan.scss";
+import AutoGrowTextArea from "../AutoGrowTextArea/AutoGrowTextArea";
 
 const emptyInput = () => ({
 	// TODO: LEARN THIS
@@ -125,16 +126,14 @@ const Plan = ({ allUsers }) => {
 				{plan.map((item) => {
 					return (
 						<div key={item.id} style={{ display: "flex", gap: 5 }}>
-							<input
-								className="plan__input"
-								type="text"
-								name="task"
-								onChange={(e) =>
+							<AutoGrowTextArea
+								value={item.task}
+								handleChange={(e) =>
 									handlePlanInput(item.id, e.target.name, e.target.value)
 								}
-								value={item.task}
-								placeholder="Vypracujte plán práce a vyberte zhotovitele."
-								onBlur={() => savePlanData(plan)}
+								name={"task"}
+								holder={"Vypracujte plán práce a vyberte zhotovitele"}
+								blur={() => savePlanData(plan)}
 							/>
 							<select
 								className="plan__input"

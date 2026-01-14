@@ -237,8 +237,9 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 									{filterItems.map((item, index) => {
 										return (
 											<div key={index} className="week-section-input-container">
-												<input
-													onChange={(e) =>
+												<AutoGrowTextArea
+													value={item.task}
+													handleChange={(e) =>
 														handleWeekListInput(
 															day.date,
 															index,
@@ -246,18 +247,15 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 															e.target.value
 														)
 													}
-													value={item.task}
-													style={
+													name={"task"}
+													holder={"Napište si své pracovní povinnosti"}
+													blur={saveWeekData}
+													disable={!canEdit}
+													customStyle={
 														!canEdit
 															? { background: "var(--bg-clr)" }
 															: { background: "#fff" }
 													}
-													className="week-section__input"
-													type="text"
-													name="task"
-													placeholder="Napište si své pracovní povinnosti"
-													onBlur={saveWeekData}
-													disabled={!canEdit}
 												/>
 												<input
 													onChange={(e) =>
@@ -288,6 +286,7 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 						);
 					})}
 				</div>
+				<StatusIndicator error={error} loading={loading} />
 			</section>
 		);
 

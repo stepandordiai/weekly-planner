@@ -7,8 +7,8 @@ const AutoGrowTextArea = ({
 	name,
 	holder,
 	blur,
-	disable,
-	customStyle,
+	disable = false,
+	customStyle = { background: "#fff" },
 }) => {
 	const autoGrowTextArea = useRef<HTMLTextAreaElement | null>(null);
 
