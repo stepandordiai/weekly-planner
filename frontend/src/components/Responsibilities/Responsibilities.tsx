@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../axios";
 import classNames from "classnames";
 import StatusIndicator from "../StatusIndicator/StatusIndicator";
+import AutoGrowTextArea from "../AutoGrowTextArea/AutoGrowTextArea";
 import ResponsibilityIcon from "../../icons/ResponsibilityIcon";
 import "./Responsibilities.scss";
 
@@ -311,22 +312,20 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 					return (
 						<div key={item.id} style={{ display: "flex", gap: 5 }}>
 							<div className="responsibilities-input-container">
-								<input
-									onChange={(e) =>
+								<AutoGrowTextArea
+									value={item.task}
+									handleChange={(e) =>
 										handleChangeInput(item.id, e.target.name, e.target.value)
 									}
-									value={item.task}
-									className="responsibilities__input"
-									style={
+									name={"task"}
+									holder={"Napište si své pracovní povinnosti"}
+									blur={saveData}
+									disable={!canEdit}
+									customStyle={
 										!canEdit
 											? { background: "var(--bg-clr)" }
 											: { background: "#fff" }
 									}
-									type="text"
-									name="task"
-									placeholder="Napište si své pracovní povinnosti"
-									onBlur={saveData}
-									disabled={!canEdit}
 								/>
 							</div>
 							<div className="responsibilities-input-container">
