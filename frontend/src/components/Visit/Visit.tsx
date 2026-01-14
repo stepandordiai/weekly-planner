@@ -1,26 +1,21 @@
 import ClockIcon from "../../icons/ClockIcon";
 import { useEffect, useState } from "react";
 import timeToMinutes from "../../utils/timeToMinutes";
-import axios from "axios";
-import "./Visit.scss";
+import api from "../../axios";
 import StatusIndicator from "../StatusIndicator/StatusIndicator";
+import "./Visit.scss";
 
 const Visit = ({ userId, currentUser, shiftDate, setShiftDate, isWeek }) => {
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
 	const [data, setData] = useState({
 		startTime: "",
 		endTime: "",
 		pauseTime: "",
 	});
-
 	const [total, setTotal] = useState("00:00");
-	const [error, setError] = useState(null);
-	const [loading, setLoading] = useState(false);
-
 	const [monthInput, setMonthInput] = useState(shiftDate.slice(0, 7));
-
 	const [month, setMonth] = useState("00:00");
-
-	console.log(monthInput);
 
 	useEffect(() => {
 		const fetchWorkShift = async () => {
@@ -34,15 +29,11 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate, isWeek }) => {
 			setTotal("00:00");
 
 			try {
-				const token = localStorage.getItem("token");
-				const res = await axios.get(
-					`${import.meta.env.VITE_API_URL}/api/work`,
+				const res = await api.get(
+					"/api/work",
 					// }/api/work/${shiftDate}?userId=${userId}`,
 					{
 						params: { date: shiftDate, userId },
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
 					}
 				);
 
@@ -66,14 +57,6 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate, isWeek }) => {
 		fetchWorkShift();
 	}, [userId, shiftDate]);
 
-	// useEffect(() => {
-	// 	if (!data) return;
-	// 	setStartTime(data.startTime || "");
-	// 	setEndTime(data.endTime || "");
-	// 	setPauseTime(data.pauseTime || "");
-	// 	setTotal("00:00");
-	// }, [data]);
-
 	useEffect(() => {
 		if (data.startTime && data.endTime) {
 			const start = timeToMinutes(data.startTime);
@@ -91,23 +74,14 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate, isWeek }) => {
 
 	const upsertWorkShift = async () => {
 		setLoading(true);
-		const token = localStorage.getItem("token");
+
 		try {
-			await axios.post(
-				`${import.meta.env.VITE_API_URL}/api/work`,
-				{
-					date: shiftDate,
-					startTime: data.startTime,
-					endTime: data.endTime,
-					pauseTime: data.pauseTime,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-						"Content-Type": "application/json",
-					},
-				}
-			);
+			await api.post("/api/work", {
+				date: shiftDate,
+				startTime: data.startTime,
+				endTime: data.endTime,
+				pauseTime: data.pauseTime,
+			});
 		} catch (err) {
 			const message = err.response?.data?.message || "Something went wrong";
 			setError(message);
@@ -116,36 +90,16 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate, isWeek }) => {
 		}
 	};
 
-	// useEffect(() => {
-	// 	// Only auto-save if at least one input has a value
-	// 	if (!data.startTime && !data.endTime && !data.pauseTime) return;
-
-	// 	const timeout = setTimeout(() => {
-	// 		upsertWorkShift();
-	// 	}, 1000);
-
-	// 	return () => clearTimeout(timeout);
-	// }, [data]);
-
 	useEffect(() => {
 		const fetchMonthData = async () => {
 			setLoading(true);
 			setError(null);
+			setMonth("00:00");
 
 			try {
-				const token = localStorage.getItem("token");
-
-				const res = await axios.get(
-					`${import.meta.env.VITE_API_URL}/api/work/monthly`,
-					{
-						params: { month: monthInput },
-						headers: {
-							Authorization: `Bearer ${token}`,
-							"Content-Type": "application/json",
-						},
-						// This matches the <input type="month" /> value
-					}
-				);
+				const res = await api.get("/api/work/monthly", {
+					params: { month: monthInput, userId },
+				});
 
 				setMonth(res.data);
 			} catch (error) {
@@ -156,7 +110,7 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate, isWeek }) => {
 		};
 
 		fetchMonthData();
-	}, [monthInput]);
+	}, [monthInput, userId]);
 
 	const handleDataInput = (name, value) => {
 		setData((prev) => ({
@@ -216,6 +170,7 @@ const Visit = ({ userId, currentUser, shiftDate, setShiftDate, isWeek }) => {
 						</p>
 					</div>
 				</div>
+				<StatusIndicator error={error} loading={loading} />
 			</section>
 		);
 	}
