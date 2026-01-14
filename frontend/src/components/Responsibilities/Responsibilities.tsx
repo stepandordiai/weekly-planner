@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import "./Responsibilities.scss";
+import api from "../../axios";
 import classNames from "classnames";
-import ResponsibilityIcon from "../../icons/ResponsibilityIcon";
 import StatusIndicator from "../StatusIndicator/StatusIndicator";
+import ResponsibilityIcon from "../../icons/ResponsibilityIcon";
+import "./Responsibilities.scss";
 
 const weekData = [
 	"Pondělí",
@@ -23,17 +23,14 @@ const emptyInput = () => ({
 });
 
 const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
-	// TODO: LEARN THIS
-	const [list, setList] = useState([emptyInput(), emptyInput()]);
-	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
+	const [list, setList] = useState([emptyInput(), emptyInput()]);
 	const [weekList, setWeekList] = useState([]);
-
-	// Move schedule calculation inside component or make it a dependency
 	const [schedule, setSchedule] = useState([]);
 
+	// TODO: LEARN THIS
 	useEffect(() => {
-		// Calculate schedule
 		const today = new Date();
 		const dayOfWeek = today.getDay();
 		const diffToMonday =
@@ -60,23 +57,18 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 
 		const fetchWeekResponsibilities = async () => {
 			setLoading(true);
-			const token = localStorage.getItem("token");
 
 			try {
 				const dates = schedule.map((d) => d.date);
-				const res = await axios.get(
-					`${import.meta.env.VITE_API_URL}/api/work/responsibilities/week`,
-					{
-						params: {
-							userId,
-							dates,
-						},
-						paramsSerializer: {
-							indexes: null,
-						},
-						headers: { Authorization: `Bearer ${token}` },
-					}
-				);
+				const res = await api.get("/api/work/responsibilities/week", {
+					params: {
+						userId,
+						dates,
+					},
+					paramsSerializer: {
+						indexes: null,
+					},
+				});
 
 				console.log("Received data:", res.data); // Debug log
 				setWeekList(res.data);
@@ -91,37 +83,15 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 		fetchWeekResponsibilities();
 	}, [schedule, userId, list]);
 
-	// const today = new Date();
-	// const dayOfWeek = today.getDay();
-	// const diffToMonday = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-	// const monday = new Date(today.setDate(diffToMonday));
-
-	// const schedule = [];
-
-	// for (let i = 0; i < 7; i++) {
-	// 	const currentDate = new Date(monday);
-	// 	currentDate.setDate(monday.getDate() + i);
-
-	// 	schedule.push({
-	// 		day: weekData[i],
-	// 		date: currentDate.toISOString().split("T")[0],
-	// 	});
-	// }
-
 	useEffect(() => {
 		setList([emptyInput(), emptyInput()]);
 
 		const fetchResponsibilities = async (date: string) => {
 			setLoading(true);
-			const token = localStorage.getItem("token");
+
 			try {
-				const res = await axios.get(
-					`${
-						import.meta.env.VITE_API_URL
-					}/api/work/responsibilities/${date}?userId=${userId}`,
-					{
-						headers: { Authorization: `Bearer ${token}` },
-					}
+				const res = await api.get(
+					`/api/work/responsibilities/${date}?userId=${userId}`
 				);
 				const hydrated = (res.data.responsibilities || []).map((item) => ({
 					id: crypto.randomUUID(),
@@ -184,7 +154,6 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 
 	const saveWeekData = async () => {
 		setLoading(true);
-		const token = localStorage.getItem("token");
 		// ✅ Prepare payload for backend
 		const payload = weekList.map((day) => ({
 			date: day.date,
@@ -197,15 +166,12 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 		}));
 
 		try {
-			await axios.put(
-				`${import.meta.env.VITE_API_URL}/api/work/responsibilities/week`,
-				{ weekList: payload }, // backend expects { weekList: [...] }
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
+			await api.put(
+				"/api/work/responsibilities/week",
+				{ weekList: payload } // backend expects { weekList: [...] }
 			);
-		} catch (error) {
-			setError(error);
+		} catch (err) {
+			setError(err.message);
 		} finally {
 			setLoading(false);
 		}
@@ -213,7 +179,6 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 
 	const saveData = async (date: string) => {
 		setLoading(true);
-		const token = localStorage.getItem("token");
 		const payload = {
 			responsibilities: list
 				.map((item) => ({
@@ -224,15 +189,9 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 		};
 
 		try {
-			await axios.put(
-				`${import.meta.env.VITE_API_URL}/api/work/responsibilities/${date}`,
-				payload,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-		} catch (error) {
-			setError(error);
+			await api.put(`/api/work/responsibilities/${date}`, payload);
+		} catch (err) {
+			setError(err.message);
 		} finally {
 			setLoading(false);
 		}
@@ -244,7 +203,10 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 	if (isWeek)
 		return (
 			<section className="section">
-				<p style={{ marginBottom: 10, fontWeight: 600 }}>Tydenni report</p>
+				<div className="container-title">
+					<ResponsibilityIcon size={20} />
+					<h2>Týdenní report</h2>
+				</div>
 				<div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
 					{weekList.map((day, index) => {
 						const weekDay = schedule.find((d) => d.date == day.date);
@@ -339,21 +301,12 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 				style={{
 					display: "flex",
 					justifyContent: "space-between",
-					marginBottom: 10,
 				}}
 			>
-				<p
-					style={{
-						fontWeight: 600,
-						display: "flex",
-						alignItems: "center",
-						gap: 5,
-						marginBottom: 10,
-					}}
-				>
-					<ResponsibilityIcon size={16} />
-					Strucny popis prace
-				</p>
+				<div className="container-title">
+					<ResponsibilityIcon size={20} />
+					<h2>Stručný popis práce</h2>
+				</div>
 				<button onClick={handleAddInput} className="responsibilities__btn">
 					Pridat
 				</button>
