@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../axios";
+import timeToMinutes from "../../utils/timeToMinutes";
 import classNames from "classnames";
 import StatusIndicator from "../StatusIndicator/StatusIndicator";
 import AutoGrowTextArea from "../AutoGrowTextArea/AutoGrowTextArea";
@@ -193,6 +194,17 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 		setList((prev) => [...prev, emptyInput()]);
 	};
 
+	const totalTime = list.reduce(
+		(acc, item) => acc + timeToMinutes(item.time),
+		0
+	);
+
+	const totalTimeFixed = `${Math.floor(totalTime / 60)
+		.toString()
+		.padStart(2, "0")}:${Math.floor(totalTime % 60)
+		.toString()
+		.padStart(2, "0")}`;
+
 	if (!currentUser) return <p>Loading...</p>; // wait for context to hydrate
 	const canEdit = currentUser._id === userId;
 
@@ -349,6 +361,26 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 						</div>
 					);
 				})}
+				<div
+					style={{
+						display: "flex",
+						alignItems: "flex-end",
+						flexDirection: "column",
+					}}
+				>
+					<span>Odpracovano</span>
+					<p
+						style={{
+							border: "var(--secondary-border)",
+							background: "var(--bg-clr)",
+							borderRadius: 5,
+							padding: 5,
+							textAlign: "center",
+						}}
+					>
+						{totalTimeFixed}
+					</p>
+				</div>
 			</div>
 			<StatusIndicator error={error} loading={loading} />
 		</section>
