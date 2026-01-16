@@ -1,0 +1,9 @@
+.building-page {
+	padding: 10px;
+	background: var(--bg-clr);
+	width: 100%;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}

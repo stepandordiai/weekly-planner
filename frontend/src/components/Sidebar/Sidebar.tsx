@@ -39,8 +39,9 @@ const Sidebar = ({ allUsers }) => {
 		setError(null);
 
 		try {
-			await api.post(`/api/buildings`, { name: modalFormData });
+			const res = await api.post(`/api/buildings`, { name: modalFormData });
 
+			setBuildings((prev) => [...prev, res.data]);
 			setModalFormVisible(false);
 		} catch (error) {
 			// TODO: LEARN THIS
@@ -140,13 +141,13 @@ const Sidebar = ({ allUsers }) => {
 					{buildings.map((building) => {
 						return (
 							<NavLink
+								key={building._id}
 								className={({ isActive }) =>
 									classNames("sidebar__link", {
 										"sidebar__link--active": isActive,
 									})
 								}
-								to={building._id}
-								key={building._id}
+								to={`/buildings/${building._id}`}
 							>
 								{building.name}
 							</NavLink>

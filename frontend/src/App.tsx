@@ -12,6 +12,7 @@ import UserPage from "./pages/UserPage/UserPage";
 import { useAuth } from "./context/AuthContext";
 import Preload from "./components/Preload/Preload";
 import "./scss/App.scss";
+import BuildingPage from "./pages/BuildingPage/BuildingPage";
 
 function App() {
 	const [loading, setLoading] = useState(false);
@@ -94,6 +95,7 @@ function App() {
 							path="/users/:id"
 							element={<UserPage allUsers={allUsers} />}
 						/>
+						<Route path="/buildings/:id" element={<BuildingPage />} />
 					</Routes>
 				</div>
 			</div>
