@@ -14,6 +14,14 @@ const buildingSchema = new mongoose.Schema(
 				orderDate: String,
 			},
 		],
+		workSchedule: [
+			{
+				desc: { type: String, required: true },
+				start: String,
+				finish: String,
+				comment: String,
+			},
+		],
 	},
 	{ timestamps: true },
 );

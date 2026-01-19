@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import "./BuildingPage.scss";
 import { useParams } from "react-router-dom";
 import classNames from "classnames";
 import api from "../../axios";
 import StatusIndicator from "../../components/StatusIndicator/StatusIndicator";
+import "./BuildingPage.scss";
 
 const emptyInput = () => ({
 	// TODO: LEARN THIS
@@ -11,6 +11,14 @@ const emptyInput = () => ({
 	desc: "",
 	orderOption: "",
 	orderDate: "",
+});
+
+const workScheduleEmptyInput = () => ({
+	id: crypto.randomUUID(),
+	desc: "",
+	start: "",
+	finish: "",
+	comment: "",
 });
 
 const BuildingPage = ({ buildings }) => {
@@ -22,12 +30,24 @@ const BuildingPage = ({ buildings }) => {
 		emptyInput(),
 		emptyInput(),
 	]);
+	const [workSchedule, setWorkSchedule] = useState([
+		workScheduleEmptyInput(),
+		workScheduleEmptyInput(),
+		workScheduleEmptyInput(),
+	]);
+
 	const [buildingOption, setBuildingOption] = useState<string>("Materiály");
 
 	const building = buildings.find((b) => b._id === id);
 
 	const handleOrderedItems = (id, name, value) => {
 		setOrderedItems((prev) =>
+			prev.map((item) => (item.id === id ? { ...item, [name]: value } : item)),
+		);
+	};
+
+	const handleWorkSchedule = (id, name, value) => {
+		setWorkSchedule((prev) =>
 			prev.map((item) => (item.id === id ? { ...item, [name]: value } : item)),
 		);
 	};
@@ -65,10 +85,45 @@ const BuildingPage = ({ buildings }) => {
 		};
 
 		fetchOrderedItemsData();
+
+		const fetchWorkSchedule = async () => {
+			setLoading(true);
+			setError(null);
+
+			try {
+				const res = await api.get(
+					`/api/building/${building._id}/work-schedule`,
+				);
+
+				const updated = res.data.map((item) => ({
+					id: crypto.randomUUID(),
+					desc: item.desc,
+					start: item.start,
+					finish: item.finish,
+					comment: item.comment,
+				}));
+
+				// TODO: LEARN THIS
+				const filled = [...updated];
+
+				while (filled.length < 3) {
+					filled.push(workScheduleEmptyInput());
+				}
+
+				setWorkSchedule(filled);
+			} catch (err) {
+				setError(err.message);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchWorkSchedule();
 	}, [id]);
 
 	const saveOrderedItemsData = async () => {
 		setLoading(true);
+		setError(null);
 
 		try {
 			await api.put(
@@ -84,16 +139,35 @@ const BuildingPage = ({ buildings }) => {
 		}
 	};
 
+	const saveWorkSchedule = async () => {
+		setLoading(true);
+		setError(null);
+
+		try {
+			await api.put(
+				`/api/building/${building._id}/work-schedule`,
+				workSchedule,
+			);
+
+			// setWorkSchedule(res.data.workSchedule);
+		} catch (err) {
+			setError(err.message);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const addEmptyInput = () =>
 		setOrderedItems((prev) => [...prev, emptyInput()]);
 
-	const handleBuildingOption = (option: string) => setBuildingOption(option);
+	const addWorkSchedule = () =>
+		setWorkSchedule((prev) => [...prev, workScheduleEmptyInput()]);
 
 	return (
 		<main className="building-page">
 			<div style={{ display: "flex", gap: 5 }}>
 				<button
-					onClick={() => handleBuildingOption("Materiály")}
+					onClick={() => setBuildingOption("Materiály")}
 					className={classNames("building-page__btn", {
 						"building-page__btn--active": buildingOption == "Materiály",
 					})}
@@ -101,7 +175,7 @@ const BuildingPage = ({ buildings }) => {
 					Materiály
 				</button>
 				<button
-					onClick={() => handleBuildingOption("Harmonogram")}
+					onClick={() => setBuildingOption("Harmonogram")}
 					className={classNames("building-page__btn", {
 						"building-page__btn--active": buildingOption == "Harmonogram",
 					})}
@@ -216,7 +290,110 @@ const BuildingPage = ({ buildings }) => {
 					<StatusIndicator error={error} loading={loading} />
 				</section>
 			) : (
-				<></>
+				<section className="section-table">
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "cnter",
+						}}
+					>
+						<h2 style={{ margin: "5px 0 0 5px ", fontWeight: 600 }}>
+							Časový harmonogram prací
+						</h2>
+						<button
+							onClick={addWorkSchedule}
+							style={{ margin: "5px 5px 0 0" }}
+							className="btn"
+						>
+							Pridat
+						</button>
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>Popis etapy / činnosti</th>
+								<th>Zahájeni</th>
+								<th>Dokončeni</th>
+								<th>Poznámky</th>
+							</tr>
+						</thead>
+						<tbody>
+							{workSchedule.map((item) => {
+								return (
+									<tr key={item.id}>
+										<td>
+											<input
+												className="input"
+												onChange={(e) =>
+													handleWorkSchedule(
+														item.id,
+														e.target.name,
+														e.target.value,
+													)
+												}
+												style={{ width: "100%" }}
+												name="desc"
+												value={item.desc}
+												type="text"
+												onBlur={saveWorkSchedule}
+											/>
+										</td>
+										<td>
+											<input
+												onChange={(e) =>
+													handleWorkSchedule(
+														item.id,
+														e.target.name,
+														e.target.value,
+													)
+												}
+												className="input"
+												name="start"
+												value={item.start}
+												type="date"
+												onBlur={saveWorkSchedule}
+											/>
+										</td>
+										<td>
+											<input
+												onChange={(e) =>
+													handleWorkSchedule(
+														item.id,
+														e.target.name,
+														e.target.value,
+													)
+												}
+												className="input"
+												name="finish"
+												value={item.finish}
+												type="date"
+												onBlur={saveWorkSchedule}
+											/>
+										</td>
+										<td>
+											<input
+												onChange={(e) =>
+													handleWorkSchedule(
+														item.id,
+														e.target.name,
+														e.target.value,
+													)
+												}
+												className="input"
+												name="comment"
+												value={item.comment}
+												type="text"
+												onBlur={saveWorkSchedule}
+											/>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+					<StatusIndicator error={error} loading={loading} />
+				</section>
 			)}
 		</main>
 	);
