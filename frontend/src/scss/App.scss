@@ -56,6 +56,12 @@ html {
 	color: var(--red-clr) !important;
 }
 
+.input--blue {
+	background: var(--blue-tp-clr) !important;
+	border: 2px solid var(--blue-clr) !important;
+	color: var(--blue-clr) !important;
+}
+
 .container-title {
 	display: flex;
 	justify-content: flex-start;
