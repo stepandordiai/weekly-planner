@@ -5,6 +5,12 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.preload__logo {
+	font-size: clamp(1.5rem, 2vw, 4rem);
 }
 
 .preload__indicator {

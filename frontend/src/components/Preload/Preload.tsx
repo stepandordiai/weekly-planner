@@ -35,6 +35,12 @@ const Preload = ({ loading }) => {
 	return (
 		<div className="preload">
 			<img src={logo} width={128} height={128} alt="NERESEN a.s. logo" />
+			<p className="preload__logo">
+				<span style={{ display: "inline-block" }} className="btn">
+					Sedmník
+				</span>{" "}
+				<span style={{ fontWeight: 600 }}>|</span> Neresen
+			</p>
 			<div className="preload__indicator">
 				<div
 					style={{
