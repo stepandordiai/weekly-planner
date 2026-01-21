@@ -5,6 +5,36 @@ import Plan from "../models/Plan.js";
 
 const router = express.Router();
 
+router.get("/responsibilities/date-range/:id", protect, async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { startDate, endDate } = req.query;
+
+		let workShifts = await WorkShift.find({
+			user: id,
+		});
+
+		if (!workShifts.length) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		// 2️⃣ filter shifts by date (STRING SAFE)
+		if (startDate || endDate) {
+			workShifts = workShifts.filter((shift) => {
+				if (!shift.date) return false;
+
+				if (startDate && shift.date < startDate) return false;
+				if (endDate && shift.date > endDate) return false;
+
+				return true;
+			});
+		}
+		res.status(200).json(workShifts);
+	} catch (error) {
+		res.status(500).json({ message: "Smth bad happend on server" });
+	}
+});
+
 router.get("/monthly", protect, async (req, res) => {
 	try {
 		const { month } = req.query; // format: "2026-01"

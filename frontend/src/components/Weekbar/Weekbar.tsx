@@ -36,9 +36,6 @@ const Weekbar = ({ shiftDate, setShiftDate, isWeek, setIsWeek }) => {
 
 	return (
 		<div className="weekbar">
-			<a className="weekbar__pdf" href="">
-				Export PDF
-			</a>
 			<div className="weekbar-container">
 				<button
 					onClick={() => setIsWeek(true)}
@@ -48,7 +45,7 @@ const Weekbar = ({ shiftDate, setShiftDate, isWeek, setIsWeek }) => {
 							? {
 									outline: "2px solid var(--accent-clr)",
 									outlineOffset: "-2px",
-							  }
+								}
 							: { outline: "none" }
 					}
 				>
@@ -68,7 +65,7 @@ const Weekbar = ({ shiftDate, setShiftDate, isWeek, setIsWeek }) => {
 									? {
 											outline: "2px solid var(--accent-clr)",
 											outlineOffset: "-2px",
-									  }
+										}
 									: { outline: "none" }
 							}
 						>

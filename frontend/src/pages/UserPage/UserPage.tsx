@@ -4,43 +4,59 @@ import Visit from "../../components/Visit/Visit";
 import { useAuth } from "../../context/AuthContext";
 import Responsibilities from "../../components/Responsibilities/Responsibilities";
 import { useState } from "react";
-import "./UserPage.scss";
 import Plan from "../../components/Plan/Plan";
+import Period from "../../components/Period/Period";
+import "./UserPage.scss";
 
-const UserPage = () => {
+const UserPage = ({ allUsers }) => {
 	const { user } = useAuth();
 	const { id } = useParams<string>();
 	const today = new Date();
 
 	const [shiftDate, setShiftDate] = useState(today.toISOString().split("T")[0]);
 	const [isWeek, setIsWeek] = useState(false);
+	const [periodActive, setPeriodActive] = useState(false);
 
 	if (!user) return <p>Loading...</p>; // wait for context to hydrate
 
 	return (
 		<main className="user-page">
-			<Weekbar
-				shiftDate={shiftDate}
-				setShiftDate={setShiftDate}
-				isWeek={isWeek}
-				setIsWeek={setIsWeek}
-			/>
-			<Visit
-				key={user?._id}
-				userId={id}
-				currentUser={user}
-				shiftDate={shiftDate}
-				setShiftDate={setShiftDate}
-				isWeek={isWeek}
-			/>
+			<button
+				style={{ justifyContent: "flex-end", width: "max-content" }}
+				className="btn"
+				onClick={() => setPeriodActive((prev) => !prev)}
+			>
+				Obdobi
+			</button>
 
-			<Responsibilities
-				shiftDate={shiftDate}
-				userId={id}
-				currentUser={user}
-				isWeek={isWeek}
-			/>
-			<Plan userId={id} />
+			{periodActive ? (
+				<Period allUsers={allUsers} userId={id} />
+			) : (
+				<>
+					<Weekbar
+						shiftDate={shiftDate}
+						setShiftDate={setShiftDate}
+						isWeek={isWeek}
+						setIsWeek={setIsWeek}
+					/>
+					<Visit
+						key={user?._id}
+						userId={id}
+						currentUser={user}
+						shiftDate={shiftDate}
+						setShiftDate={setShiftDate}
+						isWeek={isWeek}
+					/>
+
+					<Responsibilities
+						shiftDate={shiftDate}
+						userId={id}
+						currentUser={user}
+						isWeek={isWeek}
+					/>
+					<Plan userId={id} />
+				</>
+			)}
 		</main>
 	);
 };

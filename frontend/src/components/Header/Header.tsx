@@ -29,8 +29,10 @@ const Header = ({ allUsers }) => {
 				<NavLink className="header__logo" to="/">
 					<img src={logo} alt="Neresen a.s. logo" />
 					<span className="header__logo-title">
-						<span>NERESEN a.s.</span>
-						<span>Říyení práce a plánovač úkolů</span>
+						<span>
+							<span style={{ fontWeight: 600 }}>NERESEN</span> a.s.
+						</span>
+						<span>Řízení práce a plánovač úkolů</span>
 					</span>
 				</NavLink>
 				<div

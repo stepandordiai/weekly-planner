@@ -96,7 +96,10 @@ function App() {
 						<Route path="/" element={<Home error={error} />} />
 						<Route path="/login" element={<Login />} />
 						<Route path="/register" element={<Register />} />
-						<Route path="/users/:id" element={<UserPage />} />
+						<Route
+							path="/users/:id"
+							element={<UserPage allUsers={allUsers} />}
+						/>
 						<Route
 							path="/buildings/:id"
 							element={<BuildingPage buildings={buildings} />}

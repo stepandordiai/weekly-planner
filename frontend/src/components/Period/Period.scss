@@ -1,0 +1,15 @@
+#pdf-content {
+	background: white;
+	color: black;
+}
+
+@media print {
+	body {
+		background: white;
+	}
+}
+
+.pdf-avoid-break {
+	break-inside: avoid;
+	page-break-inside: avoid;
+}

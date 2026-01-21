@@ -61,7 +61,7 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 
 			try {
 				const res = await api.get(
-					`/api/work/responsibilities/${date}?userId=${userId}`
+					`/api/work/responsibilities/${date}?userId=${userId}`,
 				);
 				const hydrated = (res.data.responsibilities || []).map((item) => ({
 					id: crypto.randomUUID(),
@@ -73,10 +73,10 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 					hydrated.length > 1
 						? hydrated
 						: hydrated.length === 1
-						? [...hydrated, emptyInput()]
-						: isWeek
-						? [emptyInput(), emptyInput(), emptyInput(), emptyInput()]
-						: [emptyInput(), emptyInput()]
+							? [...hydrated, emptyInput()]
+							: isWeek
+								? [emptyInput(), emptyInput(), emptyInput(), emptyInput()]
+								: [emptyInput(), emptyInput()],
 				);
 			} catch (error) {
 				setError(error);
@@ -122,7 +122,7 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 	const handleChangeInput = (id, name, value) => {
 		setList((prev) =>
 			// TODO: learn this
-			prev.map((item) => (item.id === id ? { ...item, [name]: value } : item))
+			prev.map((item) => (item.id === id ? { ...item, [name]: value } : item)),
 		);
 	};
 
@@ -141,7 +141,7 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 				};
 
 				return { ...d, responsibilities: newResponsibilities };
-			})
+			}),
 		);
 	};
 
@@ -181,7 +181,7 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 		try {
 			await api.put(
 				"/api/work/responsibilities/week",
-				{ weekList: payload } // backend expects { weekList: [...] }
+				{ weekList: payload }, // backend expects { weekList: [...] }
 			);
 		} catch (err) {
 			setError(err.message);
@@ -196,7 +196,7 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 
 	const totalTime = list.reduce(
 		(acc, item) => acc + timeToMinutes(item.time),
-		0
+		0,
 	);
 
 	const totalTimeFixed = `${Math.floor(totalTime / 60)
@@ -210,96 +210,101 @@ const Responsibilities = ({ shiftDate, userId, currentUser, isWeek }) => {
 
 	if (isWeek)
 		return (
-			<section className="section">
-				<div className="container-title">
-					<ResponsibilityIcon size={20} />
-					<h2>Týdenní report</h2>
-				</div>
-				<div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-					{weekList.map((day, index) => {
-						const weekDay = schedule.find((d) => d.date == day.date);
-						const ensureResponsibilities = (responsibilities) => {
-							const arr = [...responsibilities];
-							while (arr.length < 4) {
-								arr.push({ task: "", time: "" });
-							}
-							return arr;
-						};
+			<>
+				<section className="section">
+					<div className="container-title">
+						<ResponsibilityIcon size={20} />
+						<h2>Týdenní report</h2>
+					</div>
+					<div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+						{weekList.map((day, index) => {
+							const weekDay = schedule.find((d) => d.date == day.date);
+							const ensureResponsibilities = (responsibilities) => {
+								const arr = [...responsibilities];
+								while (arr.length < 4) {
+									arr.push({ task: "", time: "" });
+								}
+								return arr;
+							};
 
-						const filterItems = ensureResponsibilities(day.responsibilities);
+							const filterItems = ensureResponsibilities(day.responsibilities);
 
-						return (
-							<div key={index} style={{ display: "flex", gap: 5 }}>
-								<p
-									className={classNames("week-section__title", {
-										"week-section__title--active":
-											day.date === new Date().toISOString().split("T")[0],
-									})}
-								>
-									{weekDay.day}
-								</p>
-								<div
-									style={{
-										display: "flex",
-										flexDirection: "column",
-										gap: 5,
-										flexGrow: 1,
-									}}
-								>
-									{filterItems.map((item, index) => {
-										return (
-											<div key={index} className="week-section-input-container">
-												<AutoGrowTextArea
-													value={item.task}
-													handleChange={(e) =>
-														handleWeekListInput(
-															day.date,
-															index,
-															e.target.name,
-															e.target.value
-														)
-													}
-													name={"task"}
-													holder={"Napište si své pracovní povinnosti"}
-													blur={saveWeekData}
-													disable={!canEdit}
-													customStyle={
-														!canEdit
-															? { background: "var(--bg-clr)" }
-															: { background: "#fff" }
-													}
-												/>
-												<input
-													onChange={(e) =>
-														handleWeekListInput(
-															day.date,
-															index,
-															e.target.name,
-															e.target.value
-														)
-													}
-													value={item.time}
-													style={
-														!canEdit
-															? { background: "var(--bg-clr)" }
-															: { background: "#fff" }
-													}
-													className="week-section__input"
-													type="time"
-													name="time"
-													onBlur={saveWeekData}
-													disabled={!canEdit}
-												/>
-											</div>
-										);
-									})}
+							return (
+								<div key={index} style={{ display: "flex", gap: 5 }}>
+									<p
+										className={classNames("week-section__title", {
+											"week-section__title--active":
+												day.date === new Date().toISOString().split("T")[0],
+										})}
+									>
+										{weekDay.day}
+									</p>
+									<div
+										style={{
+											display: "flex",
+											flexDirection: "column",
+											gap: 5,
+											flexGrow: 1,
+										}}
+									>
+										{filterItems.map((item, index) => {
+											return (
+												<div
+													key={index}
+													className="week-section-input-container"
+												>
+													<AutoGrowTextArea
+														value={item.task}
+														handleChange={(e) =>
+															handleWeekListInput(
+																day.date,
+																index,
+																e.target.name,
+																e.target.value,
+															)
+														}
+														name={"task"}
+														holder={"Napište si své pracovní povinnosti"}
+														blur={saveWeekData}
+														disable={!canEdit}
+														customStyle={
+															!canEdit
+																? { background: "var(--bg-clr)" }
+																: { background: "#fff" }
+														}
+													/>
+													<input
+														onChange={(e) =>
+															handleWeekListInput(
+																day.date,
+																index,
+																e.target.name,
+																e.target.value,
+															)
+														}
+														value={item.time}
+														style={
+															!canEdit
+																? { background: "var(--bg-clr)" }
+																: { background: "#fff" }
+														}
+														className="week-section__input"
+														type="time"
+														name="time"
+														onBlur={saveWeekData}
+														disabled={!canEdit}
+													/>
+												</div>
+											);
+										})}
+									</div>
 								</div>
-							</div>
-						);
-					})}
-				</div>
-				<StatusIndicator error={error} loading={loading} />
-			</section>
+							);
+						})}
+					</div>
+					<StatusIndicator error={error} loading={loading} />
+				</section>
+			</>
 		);
 
 	return (
