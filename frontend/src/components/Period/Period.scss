@@ -13,3 +13,22 @@
 	break-inside: avoid;
 	page-break-inside: avoid;
 }
+
+.content-page {
+	width: 1200px;
+}
+
+.pdf-header {
+	display: none;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 5px;
+}
+
+.pdf-btn--hidden {
+	display: none;
+}
+
+.pdf-header--visible {
+	display: flex;
+}

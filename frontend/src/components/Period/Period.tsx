@@ -6,6 +6,8 @@ import { useRef } from "react";
 import api from "../../axios";
 import "./Period.scss";
 import StatusIndicator from "../StatusIndicator/StatusIndicator";
+import classNames from "classnames";
+import timeToMinutes from "../../utils/timeToMinutes";
 
 const Period = ({ allUsers, userId }) => {
 	const [error, setError] = useState(null);
@@ -15,6 +17,7 @@ const Period = ({ allUsers, userId }) => {
 		endDate: "",
 	});
 	const [data, setData] = useState([]);
+	const [initPdf, setInitPdf] = useState(false);
 
 	const handleDateRange = (name, value) => {
 		setDateRange((prev) => ({ ...prev, [name]: value }));
@@ -54,6 +57,10 @@ const Period = ({ allUsers, userId }) => {
 	// TODO: LEARN THIS
 	const exportPDF = async () => {
 		if (!pdfRef.current) return;
+		document.body.classList.add("content-page");
+		setInitPdf(true);
+
+		await new Promise((resolve) => setTimeout(resolve, 200));
 
 		const pdf = new jsPDF("p", "mm", "a4");
 
@@ -72,9 +79,11 @@ const Period = ({ allUsers, userId }) => {
 			const canvas = await html2canvas(block, {
 				scale: 1,
 				useCORS: true,
+				allowTaint: false,
+				backgroundColor: "#ffffff",
 			});
 
-			const imgData = canvas.toDataURL("image/png");
+			const imgData = canvas.toDataURL("image/jpeg");
 			const imgHeight = (canvas.height * contentWidth) / canvas.width;
 
 			// 🔥 NEW PAGE if block doesn't fit
@@ -83,13 +92,36 @@ const Period = ({ allUsers, userId }) => {
 				yOffset = margin;
 			}
 
-			pdf.addImage(imgData, "PNG", margin, yOffset, contentWidth, imgHeight);
+			pdf.addImage(imgData, "JPEG", margin, yOffset, contentWidth, imgHeight);
 
 			yOffset += imgHeight + 1; // spacing between blocks
 		}
 
-		pdf.save("export.pdf");
+		pdf.save(`${currentUser.name.replace(" ", "-").toLowerCase()}-export.pdf`);
+
+		document.body.classList.remove("content-page");
+		setInitPdf(false);
 	};
+
+	// Helper arrow function
+	const capitalizeDay = (day) => day?.charAt(0).toUpperCase() + day.slice(1);
+
+	const totalMinutes = data.reduce((acc, item) => {
+		if (!item.startTime || !item.endTime) {
+			return acc;
+		} else {
+			return (
+				acc +
+				timeToMinutes(item.endTime) -
+				timeToMinutes(item.startTime) -
+				timeToMinutes(item.pauseTime)
+			);
+		}
+	}, 0);
+
+	const totalTime = `${Math.floor(totalMinutes / 60)
+		.toString()
+		.padStart(2, "0")}:${(totalMinutes % 60).toString().padStart(2, "0")}`;
 
 	return (
 		<>
@@ -97,6 +129,17 @@ const Period = ({ allUsers, userId }) => {
 				Export PDF
 			</button>
 			<section ref={pdfRef} id="pdf-content" className="section">
+				<div
+					className={classNames("pdf-header pdf-avoid-break", {
+						"pdf-header--visible": initPdf,
+					})}
+					style={{
+						fontWeight: 600,
+						fontSize: "1.5rem",
+					}}
+				>
+					Neresen | <span style={{ color: "var(--accent-clr)" }}>Sedmník</span>
+				</div>
 				<div
 					className="pdf-avoid-break"
 					style={{
@@ -108,32 +151,52 @@ const Period = ({ allUsers, userId }) => {
 				>
 					<p style={{ fontSize: "2rem" }}>{currentUser.name}</p>
 					<p>Období</p>
-					<div>
-						<label htmlFor="">Od </label>
-						<input
-							className="input"
-							type="date"
-							onChange={(e) => handleDateRange(e.target.name, e.target.value)}
-							name="startDate"
-							value={dateRange.startDate}
-						/>
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "flex-end",
+							width: "100%",
+						}}
+					>
+						<div>
+							<label htmlFor="from">Od </label>
+							<input
+								className="input"
+								id="from"
+								type="date"
+								onChange={(e) => handleDateRange(e.target.name, e.target.value)}
+								name="startDate"
+								value={dateRange.startDate}
+							/>
+							<label htmlFor="to"> Do </label>
+							<input
+								className="input"
+								id="to"
+								onChange={(e) => handleDateRange(e.target.name, e.target.value)}
+								name="endDate"
+								type="date"
+								value={dateRange.endDate}
+							/>
+						</div>
+						<div style={{ display: "flex", flexDirection: "column" }}>
+							<span>Odpracováno</span>
+							<span style={{ textAlign: "center" }} className="input">
+								{totalTime}
+							</span>
+						</div>
 					</div>
-					<div>
-						<label htmlFor="">Do </label>
-						<input
-							className="input"
-							onChange={(e) => handleDateRange(e.target.name, e.target.value)}
-							name="endDate"
-							type="date"
-							value={dateRange.endDate}
-						/>
-					</div>
-					<button className="btn" onClick={fetchDataRange}>
+					<button
+						className={classNames("btn", {
+							"pdf-btn--hidden": initPdf,
+						})}
+						onClick={fetchDataRange}
+					>
 						Získat data
 					</button>
 				</div>
 				{data.length === 0 ? (
-					"No data"
+					"Vyberte období pro zobrazení data"
 				) : (
 					<div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
 						{data.map((item, i) => {
@@ -157,7 +220,7 @@ const Period = ({ allUsers, userId }) => {
 										}}
 										className="input"
 									>
-										{dateToDayName(item.date)} | {item.date}
+										{capitalizeDay(dateToDayName(item.date))} | {item.date}
 									</p>
 									<div
 										style={{
