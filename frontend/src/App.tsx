@@ -5,14 +5,13 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import { useState, useEffect } from "react";
-// import axios from "axios";
-// import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import api from "./axios";
 import UserPage from "./pages/UserPage/UserPage";
 import { useAuth } from "./context/AuthContext";
 import Preload from "./components/Preload/Preload";
-import "./scss/App.scss";
 import BuildingPage from "./pages/BuildingPage/BuildingPage";
+import "./scss/App.scss";
 
 function App() {
 	const [loading, setLoading] = useState(false);
@@ -22,7 +21,7 @@ function App() {
 	const [allUsers, setAllUsers] = useState<any[]>([]);
 	const [buildings, setBuildings] = useState([]);
 
-	// TODO: LEARN THIS
+	// TODO: learn this
 	useEffect(() => {
 		api
 			.get("/health")
@@ -94,8 +93,14 @@ function App() {
 					/>
 					<Routes>
 						<Route path="/" element={<Home error={error} />} />
-						<Route path="/login" element={<Login />} />
-						<Route path="/register" element={<Register />} />
+						<Route
+							path="/login"
+							element={user ? <Navigate to="/" /> : <Login />}
+						/>
+						<Route
+							path="/register"
+							element={user ? <Navigate to="/" /> : <Register />}
+						/>
 						<Route
 							path="/users/:id"
 							element={<UserPage allUsers={allUsers} />}
