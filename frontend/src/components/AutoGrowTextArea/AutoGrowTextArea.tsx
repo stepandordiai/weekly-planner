@@ -5,7 +5,7 @@ const AutoGrowTextArea = ({
 	value,
 	handleChange,
 	name,
-	holder,
+	holder = "",
 	blur,
 	disable = false,
 	customStyle = { background: "#fff" },

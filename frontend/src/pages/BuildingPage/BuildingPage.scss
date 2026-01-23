@@ -28,22 +28,3 @@
 	flex-direction: column;
 	gap: 10px;
 }
-
-table {
-	border-collapse: separate;
-	border-spacing: 5px;
-	width: 100%;
-}
-
-th {
-	white-space: nowrap;
-	width: 100%;
-	text-align: left;
-	font-weight: initial;
-}
-
-td {
-	&:first-child {
-		width: 100%;
-	}
-}
