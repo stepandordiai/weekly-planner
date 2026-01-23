@@ -26,6 +26,12 @@ const Register = () => {
 	// TODO: learn this
 	const handleForm = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+		if (!formData.name.trim().includes(" ")) {
+			setError("Zadejte své jméno a příjmení (např. Jan Novák)");
+			return;
+		}
+
 		setError(null);
 		setLoading(true);
 
@@ -34,9 +40,11 @@ const Register = () => {
 				`${import.meta.env.VITE_API_URL}/api/register`,
 				formData,
 			);
+
 			localStorage.setItem("token", res.data.token);
-			// Save user object
+			// TODO: learn this
 			localStorage.setItem("user", JSON.stringify(res.data));
+
 			setUser(res.data);
 			navigate("/");
 		} catch (err) {
@@ -57,6 +65,11 @@ const Register = () => {
 					<div className="register-input-container">
 						<label htmlFor="name">Jméno a příjmení</label>
 						<input
+							style={
+								!formData.name.trim().includes(" ")
+									? { border: "1px solid #f00" }
+									: { border: "var(--secondary-border)" }
+							}
 							id="name"
 							className="register__input"
 							type="text"
