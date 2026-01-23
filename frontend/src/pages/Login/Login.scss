@@ -7,7 +7,7 @@
 }
 
 .login-container {
-	border: 1px solid rgba(0, 0, 0, 0.1);
+	border: var(--primary-border);
 	padding: 25px;
 	border-radius: 10px;
 	width: min(100%, 500px);
@@ -20,8 +20,8 @@
 }
 
 .login__input {
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	border-radius: 10px;
+	border: var(--secondary-border);
+	border-radius: 5px;
 	padding: 10px;
 
 	&:focus {
@@ -34,6 +34,5 @@
 	background: var(--accent-clr);
 	padding: 10px;
 	color: #fff;
-	border-radius: 10px;
-	width: 100%;
+	border-radius: 5px;
 }

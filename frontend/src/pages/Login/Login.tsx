@@ -4,13 +4,14 @@ import axios from "axios";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import "./Login.scss";
 
 const Login = () => {
 	const { setUser } = useAuth();
-
 	const navigate = useNavigate();
-
+	const [error, setError] = useState(null);
+	const [loading, setLoading] = useState(null);
 	const [formData, setFormData] = useState({
 		username: "",
 		password: "",
@@ -21,23 +22,25 @@ const Login = () => {
 		setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 	};
 
-	const [error, setError] = useState("");
-
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setLoading(true);
+		setError(null);
+
 		try {
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/api/login`,
-				formData
+				formData,
 			);
 			localStorage.setItem("token", res.data.token);
 
 			setLoggedInUser(res.data);
-
-			// FIXME:
 		} catch (err) {
+			// TODO: learn this
 			setError(err.response?.data.message);
 			console.error("Full Error Object:", err.response?.data.message);
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -55,10 +58,9 @@ const Login = () => {
 	return (
 		<main className="login">
 			<div className="login-container">
-				<h1 style={{ fontSize: "2rem", marginBottom: 25 }}>Prihlasit se</h1>
-				{error && <p style={{ color: "red", marginBottom: 10 }}>{error}</p>}
-				{/* TODO: */}
-				<form className="login-form" action="" onSubmit={handleSubmit}>
+				<h1 style={{ fontSize: "2rem", marginBottom: 25 }}>Přihlasit se</h1>
+				{error && <p style={{ color: "#f00", marginBottom: 10 }}>{error}</p>}
+				<form className="login-form" onSubmit={handleSubmit}>
 					<div
 						style={{
 							display: "flex",
@@ -91,14 +93,14 @@ const Login = () => {
 							required
 						/>
 					</div>
-					<button type="submit" className="login__btn">
-						Přihlásit se
+					<button type="submit" className="login__btn" disabled={loading}>
+						{loading ? <LoadingSpinner /> : "Přihlásit se"}
 					</button>
 				</form>
 				<div style={{ marginTop: 25 }}>
-					<span>Don't have an account?</span>{" "}
+					<span>Nemáte účet?</span>{" "}
 					<NavLink style={{ textDecoration: "underline" }} to="/register">
-						Create an account
+						Vytvořte si účet
 					</NavLink>
 				</div>
 			</div>

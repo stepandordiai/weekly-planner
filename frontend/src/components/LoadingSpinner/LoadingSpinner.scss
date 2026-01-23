@@ -1,0 +1,28 @@
+.loading-spinner {
+	position: relative;
+	// TODO: learn this
+	display: block;
+	width: 20px;
+	margin: 0 auto;
+	aspect-ratio: 1/1;
+	border-radius: 50%;
+	background: conic-gradient(#fff 25%, rgba(255, 255, 255, 0.25) 0%);
+	animation: rotateSpinner 1s infinite linear;
+
+	&::after {
+		content: "";
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		border-radius: inherit;
+		background: var(--accent-clr);
+		width: calc(100% - 4px);
+		height: calc(100% - 4px);
+	}
+}
+
+@keyframes rotateSpinner {
+	to {
+		transform: rotate(360deg);
+	}
+}
