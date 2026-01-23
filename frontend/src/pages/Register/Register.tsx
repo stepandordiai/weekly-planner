@@ -66,7 +66,7 @@ const Register = () => {
 						<label htmlFor="name">Jméno a příjmení</label>
 						<input
 							style={
-								!formData.name.trim().includes(" ")
+								!formData.name.trim().includes(" ") && formData.name
 									? { border: "1px solid #f00" }
 									: { border: "var(--secondary-border)" }
 							}
