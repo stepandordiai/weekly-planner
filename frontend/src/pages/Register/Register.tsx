@@ -1,52 +1,59 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
-import "./Register.scss";
 import { useAuth } from "../../context/AuthContext";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import "./Register.scss";
 
 const Register = () => {
 	const { setUser } = useAuth();
 	const navigate = useNavigate();
 
+	const [error, setError] = useState(null);
+	const [loading, setLoading] = useState(false);
 	const [formData, setFormData] = useState({
 		name: "",
 		username: "",
 		password: "",
 	});
 
-	const [error, setError] = useState("");
-
-	const handleChange = (e) => {
-		// TODO:
+	// TODO: learn this
+	const handleFormData = (e: ChangeEvent<HTMLInputElement>) => {
 		setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 	};
 
-	const handleSubmit = async (e) => {
+	// TODO: learn this
+	const handleForm = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setError(null);
+		setLoading(true);
+
 		try {
 			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/api/register`,
-				formData
+				formData,
 			);
 			localStorage.setItem("token", res.data.token);
 			// Save user object
 			localStorage.setItem("user", JSON.stringify(res.data));
 			setUser(res.data);
 			navigate("/");
-			// TODO: LEARN THIS
 		} catch (err) {
 			setError(err.response?.data.message);
 			console.error("Full Error Object:", err.response?.data.message);
+		} finally {
+			setLoading(false);
 		}
 	};
+
 	return (
-		<div className="register">
+		<main className="register">
 			<div className="register-container">
 				<h1 style={{ fontSize: "2rem", marginBottom: 25 }}>Registrace</h1>
-				{error && <p style={{ color: "red", marginBottom: 10 }}>{error}</p>}
+				{error && <p style={{ color: "#f00", marginBottom: 10 }}>{error}</p>}
 				{/* TODO: */}
-				<form className="register-form" action="" onSubmit={handleSubmit}>
+				<form className="register-form" action="" onSubmit={handleForm}>
 					<div className="register-input-container">
 						<label htmlFor="name">Jméno a příjmení</label>
 						<input
@@ -55,10 +62,11 @@ const Register = () => {
 							type="text"
 							name="name"
 							value={formData.name}
-							onChange={handleChange}
+							onChange={handleFormData}
 							placeholder="Zadejte své jméno a příjmení"
 							required
-							// TODO:
+							// TODO: learn this
+							// FIXME:
 							autoComplete="off"
 						/>
 					</div>
@@ -70,10 +78,10 @@ const Register = () => {
 							type="text"
 							name="username"
 							value={formData.username}
-							onChange={handleChange}
+							onChange={handleFormData}
 							placeholder="Zadejte své uživatelské jméno"
 							required
-							// TODO:
+							// FIXME:
 							autoComplete="off"
 						/>
 					</div>
@@ -85,12 +93,14 @@ const Register = () => {
 							type="password"
 							name="password"
 							value={formData.password}
-							onChange={handleChange}
+							onChange={handleFormData}
 							placeholder="Zadejte své heslo"
 							required
 						/>
 					</div>
-					<button className="register__btn">Vytvořit účet</button>
+					<button type="submit" className="register__btn">
+						{loading ? <LoadingSpinner /> : "Vytvořit účet"}
+					</button>
 				</form>
 				<div style={{ marginTop: 25 }}>
 					<span>Už máte účet?</span>{" "}
@@ -99,7 +109,7 @@ const Register = () => {
 					</NavLink>
 				</div>
 			</div>
-		</div>
+		</main>
 	);
 };
 
