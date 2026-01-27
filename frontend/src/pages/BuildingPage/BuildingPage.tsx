@@ -5,8 +5,8 @@ import WorkSchedule from "../../components/WorkSchedule/WorkSchedule";
 import OrderedAndPurchasedItems from "../../components/OrderedAndPurchasedItems/OrderedAndPurchasedItems";
 import { useAuth } from "../../context/AuthContext";
 import StatusIndicator from "../../components/StatusIndicator/StatusIndicator";
-import "./BuildingPage.scss";
 import api from "../../axios";
+import "./BuildingPage.scss";
 
 const BuildingPage = ({ buildings }) => {
 	const { id } = useParams();
@@ -171,7 +171,6 @@ const BuildingPage = ({ buildings }) => {
 								);
 							})}
 						</div>
-						{/* <AutoGrowTextArea/> */}
 						<form onSubmit={saveComment}>
 							<textarea
 								onChange={(e) => handleComment(e)}
@@ -179,10 +178,14 @@ const BuildingPage = ({ buildings }) => {
 								className="input"
 								style={{ width: "100%" }}
 								name="text"
-								id=""
+								rows={3}
 							></textarea>
-							<button className="btn" type="submit">
-								Save
+							<button
+								style={{ marginLeft: "auto" }}
+								className="btn"
+								type="submit"
+							>
+								Odeslat
 							</button>
 						</form>
 						<StatusIndicator error={error} loading={loading} />
