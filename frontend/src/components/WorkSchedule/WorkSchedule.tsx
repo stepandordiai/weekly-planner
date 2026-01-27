@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../../axios";
 import StatusIndicator from "../StatusIndicator/StatusIndicator";
 import PlusIconSmall from "../../icons/PlusIconSmall";
+import AutoGrowTextArea from "../AutoGrowTextArea/AutoGrowTextArea";
 import "./WorkSchedule.scss";
 
 const workScheduleEmptyInput = () => ({
@@ -84,30 +85,9 @@ const WorkSchedule = ({ id, building }) => {
 
 	return (
 		<section className="section-table">
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "cnter",
-				}}
-			>
-				<h2 style={{ margin: "5px 0 0 5px ", fontWeight: 600 }}>
-					Časový harmonogram prací
-				</h2>
-				<button
-					onClick={addWorkSchedule}
-					style={{
-						margin: "5px 5px 0 0",
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-					className="btn"
-				>
-					<PlusIconSmall />
-					<span>Přidat</span>
-				</button>
-			</div>
+			<h2 style={{ margin: "5px 0 0 5px ", fontWeight: 600 }}>
+				Časový harmonogram prací
+			</h2>
 			<table>
 				<thead>
 					<tr>
@@ -122,16 +102,13 @@ const WorkSchedule = ({ id, building }) => {
 						return (
 							<tr key={item.id}>
 								<td>
-									<input
-										className="input"
-										onChange={(e) =>
+									<AutoGrowTextArea
+										value={item.desc}
+										handleChange={(e) =>
 											handleWorkSchedule(item.id, e.target.name, e.target.value)
 										}
-										style={{ width: "100%" }}
 										name="desc"
-										value={item.desc}
-										type="text"
-										onBlur={saveWorkSchedule}
+										blur={saveWorkSchedule}
 									/>
 								</td>
 								<td>
@@ -175,7 +152,23 @@ const WorkSchedule = ({ id, building }) => {
 					})}
 				</tbody>
 			</table>
-			<StatusIndicator error={error} loading={loading} />
+			<button
+				onClick={addWorkSchedule}
+				style={{
+					margin: "0 5px 0 0",
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					alignSelf: "flex-end",
+				}}
+				className="btn"
+			>
+				<PlusIconSmall />
+				<span>Přidat</span>
+			</button>
+			<div style={{ margin: "0 0 5px 5px" }}>
+				<StatusIndicator error={error} loading={loading} />
+			</div>
 		</section>
 	);
 };
