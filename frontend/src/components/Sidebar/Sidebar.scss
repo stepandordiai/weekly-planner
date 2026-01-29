@@ -61,6 +61,10 @@
 	font-weight: 600;
 }
 
+.link--active {
+	border: 1px solid var(--accent-clr) !important;
+}
+
 .avatar {
 	width: 30px;
 	height: 30px;

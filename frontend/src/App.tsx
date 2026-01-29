@@ -12,6 +12,7 @@ import { useAuth } from "./context/AuthContext";
 import Preload from "./components/Preload/Preload";
 import BuildingPage from "./pages/BuildingPage/BuildingPage";
 import "./scss/App.scss";
+import Tools from "./pages/Tools/Tools";
 
 function App() {
 	const [loading, setLoading] = useState(false);
@@ -116,6 +117,7 @@ function App() {
 							path="/buildings/:id"
 							element={<BuildingPage buildings={buildings} />}
 						/>
+						<Route path="/tools" element={<Tools buildings={buildings} />} />
 					</Routes>
 				</div>
 			</div>

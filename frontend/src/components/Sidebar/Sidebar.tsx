@@ -9,6 +9,7 @@ import StatusIndicator from "../StatusIndicator/StatusIndicator";
 import PlusIcon from "../../icons/PlusIcon";
 import PlusIconSmall from "../../icons/PlusIconSmall";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import ToolsIcon from "../../icons/ToolsIcon";
 import "./Sidebar.scss";
 
 const Sidebar = ({
@@ -23,7 +24,7 @@ const Sidebar = ({
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [modalFormData, setModalFormData] = useState("");
-	const [sidebarTeam, setSidebarTeam] = useState(true);
+	const [sidebarTeam, setSidebarTeam] = useState(false);
 	const [sidebarBuildings, setSidebarBuildings] = useState(false);
 
 	useEffect(() => {
@@ -208,6 +209,19 @@ const Sidebar = ({
 						</div>
 					</div>
 				</div>
+				<NavLink
+					style={{ borderRadius: 10 }}
+					className={({ isActive }) =>
+						classNames("sidebar__link", {
+							"sidebar__link--active": isActive,
+						})
+					}
+					key={user._id}
+					to="/tools"
+				>
+					<ToolsIcon size={20} />
+					<span>Nářadí</span>
+				</NavLink>
 				<StatusIndicator error={error} loading={loading} />
 			</aside>
 		</>
