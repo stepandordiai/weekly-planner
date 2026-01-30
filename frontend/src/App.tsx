@@ -11,8 +11,8 @@ import UserPage from "./pages/UserPage/UserPage";
 import { useAuth } from "./context/AuthContext";
 import Preload from "./components/Preload/Preload";
 import BuildingPage from "./pages/BuildingPage/BuildingPage";
-import "./scss/App.scss";
 import Tools from "./pages/Tools/Tools";
+import "./scss/App.scss";
 
 function App() {
 	const [loading, setLoading] = useState(false);
@@ -47,7 +47,7 @@ function App() {
 				setAllUsers(res.data);
 			} catch (err) {
 				console.error("Error fetching sidebar users", err);
-				setError(err.message);
+				setError(err.response?.data.message);
 			} finally {
 				setLoading(false);
 				await new Promise((resolve) => setTimeout(resolve, 500));
@@ -68,7 +68,7 @@ function App() {
 					const res = await api.get("/api/users/me");
 					setUser(res.data);
 				} catch (err) {
-					setError(err instanceof Error ? err.message : "An error occurred");
+					setError(err.response?.data.message);
 					localStorage.removeItem("token");
 				} finally {
 					setLoading(false);
@@ -88,7 +88,11 @@ function App() {
 			<div className="wrapper">
 				<Header
 					allUsers={allUsers}
+					setBuildings={setBuildings}
 					buildings={buildings}
+					error={error}
+					setError={setError}
+					loading={loading}
 					setModalFormVisible={setModalFormVisible}
 				/>
 				<div className="wrapper-inner">
@@ -100,7 +104,7 @@ function App() {
 						setModalFormVisible={setModalFormVisible}
 					/>
 					<Routes>
-						<Route path="/" element={<Home error={error} />} />
+						<Route path="/" element={<Home />} />
 						<Route
 							path="/login"
 							element={user ? <Navigate to="/" /> : <Login />}

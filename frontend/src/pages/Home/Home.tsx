@@ -2,13 +2,12 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "./Home.scss";
 
-const Home = ({ error }) => {
+const Home = () => {
 	const { user } = useAuth();
 
 	return (
 		<>
 			<main className="home">
-				<div>{error && <p>{error}</p>}</div>
 				{user ? (
 					<div
 						style={{
@@ -42,11 +41,11 @@ const Home = ({ error }) => {
 							přístup.
 						</p>
 						<div style={{ display: "flex", gap: 5 }}>
-							<NavLink className="home__link" to="/login">
-								Prihlasit se
-							</NavLink>
 							<NavLink className="home__link" to="/register">
 								Registrace
+							</NavLink>
+							<NavLink className="home__link" to="/login">
+								Prihlasit se
 							</NavLink>
 						</div>
 					</div>

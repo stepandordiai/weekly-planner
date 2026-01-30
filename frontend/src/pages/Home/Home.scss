@@ -26,11 +26,11 @@
 
 .home__link {
 	padding: 10px;
-	border-radius: 10px;
+	border-radius: 5px;
 	background: var(--accent-clr);
 	color: #fff;
 
-	&:nth-last-child(1) {
+	&:nth-child(2) {
 		background: #000;
 	}
 }
@@ -111,7 +111,9 @@
 	grid-template-rows: 0fr;
 	// gap: 10px;
 	overflow: hidden;
-	transition: grid-template-rows 0.3s, padding 0.3s;
+	transition:
+		grid-template-rows 0.3s,
+		padding 0.3s;
 }
 
 .dd-container--visible {

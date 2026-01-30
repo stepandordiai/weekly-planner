@@ -44,7 +44,7 @@ const Sidebar = ({
 		};
 
 		fetchBuildingData();
-	}, []);
+	}, [user]);
 
 	const saveModalFormData = async () => {
 		setLoading(true);
@@ -191,7 +191,7 @@ const Sidebar = ({
 						})}
 					>
 						<div className="sidebar-container">
-							{buildings.map((building) => {
+							{buildings?.map((building) => {
 								return (
 									<NavLink
 										key={building._id}
@@ -223,7 +223,10 @@ const Sidebar = ({
 				</NavLink>
 				<StatusIndicator error={error} loading={loading} />
 				<p className="sidebar__author">
-					Created by <a href="https://www.heeeyooo.studio/">heeeyooo studio</a>
+					Created by{" "}
+					<a href="https://www.heeeyooo.studio/" target="_blank">
+						heeeyooo studio
+					</a>
 				</p>
 			</aside>
 		</>
