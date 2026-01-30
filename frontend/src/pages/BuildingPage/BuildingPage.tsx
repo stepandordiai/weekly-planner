@@ -16,6 +16,7 @@ const BuildingPage = ({ buildings }) => {
 	const [error, setError] = useState(null);
 
 	interface Comment {
+		id: string;
 		name: string;
 		text: string;
 		createdAt: string;
@@ -27,6 +28,8 @@ const BuildingPage = ({ buildings }) => {
 	}
 
 	const [comments, setComments] = useState<Comment[]>([]);
+
+	console.log(comments);
 
 	const [formData, setFormData] = useState({
 		name: user?.name,
@@ -99,6 +102,10 @@ const BuildingPage = ({ buildings }) => {
 		return `${hours}:${minutes} ${year}-${month}-${day}`;
 	};
 
+	// const removeComment = () => {
+	// 	setComments((prev) => prev.filter((comment) => comment));
+	// };
+
 	return (
 		<main className="building-page">
 			<div style={{ display: "flex", gap: 5 }}>
@@ -167,6 +174,7 @@ const BuildingPage = ({ buildings }) => {
 												.replace(/\.\s/g, ".")} */}
 											{formatDateTimeNoSpaces(comment.createdAt)}
 										</p>
+										<button>X</button>
 									</div>
 								);
 							})}

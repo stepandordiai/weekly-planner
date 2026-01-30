@@ -63,6 +63,7 @@ router.post("/:buildingId/comments", protect, async (req, res) => {
 		});
 
 		return res.status(201).json({
+			id: comment._id,
 			name: comment.name,
 			text: comment.text,
 			createdAt: comment.createdAt,
@@ -85,6 +86,7 @@ router.get("/:buildingId/comments", protect, async (req, res) => {
 		const comments = await Comment.find({ buildingId });
 
 		const updated = comments.map((comment) => ({
+			id: comment._id,
 			name: comment.name,
 			text: comment.text,
 			createdAt: comment.createdAt,
