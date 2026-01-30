@@ -11,6 +11,7 @@ import PlusIconSmall from "../../icons/PlusIconSmall";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import ToolsIcon from "../../icons/ToolsIcon";
 import "./Sidebar.scss";
+import StoreIcon from "../../icons/StoreIcon";
 
 const Sidebar = ({
 	allUsers,
@@ -219,8 +220,17 @@ const Sidebar = ({
 					to="/tools"
 				>
 					<ToolsIcon size={20} />
-					<span>Nářadí</span>
+					<span style={{ fontWeight: 600 }}>Nářadí</span>
 				</NavLink>
+				<a
+					style={{ borderRadius: 10 }}
+					className="sidebar__link"
+					href="https://neresen-as.odoo.com/odoo/action-288"
+					target="_blank"
+				>
+					<StoreIcon size={20} />
+					<span style={{ fontWeight: 600 }}>Složení "Tatra"</span>
+				</a>
 				<StatusIndicator error={error} loading={loading} />
 				<p className="sidebar__author">
 					Created by{" "}
