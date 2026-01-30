@@ -1,3 +1,44 @@
+.header-modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: min(calc(100% - 20px), 500px);
+	background: #fff;
+	z-index: 3;
+	padding: 25px;
+	border-radius: 10px;
+	display: none;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.header-modal--visible {
+	display: flex;
+}
+
+.header-modal__btn {
+	background: var(--accent-clr);
+	color: #fff;
+	padding: 10px;
+	border-radius: 5px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.header__curtain {
+	display: none;
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 2;
+}
+
+.header__curtain--visible {
+	display: initial;
+}
+
 .header {
 	border-bottom: var(--primary-border);
 	padding: 10px;

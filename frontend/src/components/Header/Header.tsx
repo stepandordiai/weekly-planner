@@ -13,6 +13,7 @@ const Header = ({ allUsers, buildings, setModalFormVisible }) => {
 	const { user, setUser } = useAuth();
 
 	const [menuVisible, setMenuVisible] = useState(false);
+	const [modalOpen, setModalOpen] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -22,12 +23,40 @@ const Header = ({ allUsers, buildings, setModalFormVisible }) => {
 		localStorage.removeItem("user");
 		setUser(null);
 		navigate("/login", { replace: true });
+		setModalOpen(false);
 	};
 
 	const handleMenu = () => setMenuVisible((prev) => !prev);
 
 	return (
 		<>
+			<div
+				className={classNames("header-modal", {
+					"header-modal--visible": modalOpen,
+				})}
+			>
+				<p style={{ fontWeight: 600 }}>Opravdu se chcete odhlásit?</p>
+				<button
+					style={{ background: "var(--red-clr)" }}
+					className="header-modal__btn"
+					onClick={handleLogout}
+				>
+					Odhlásit se
+				</button>
+				<button
+					style={{ background: "#000" }}
+					className="header-modal__btn"
+					onClick={() => setModalOpen(false)}
+				>
+					Zrušit
+				</button>
+			</div>
+			<div
+				onClick={() => setModalOpen(false)}
+				className={classNames("header__curtain", {
+					"header__curtain--visible": modalOpen,
+				})}
+			></div>
 			<header className="header">
 				<NavLink className="header__logo" to="/">
 					<img src={logo} alt="Neresen a.s. logo" />
@@ -47,7 +76,7 @@ const Header = ({ allUsers, buildings, setModalFormVisible }) => {
 					}}
 				>
 					{user ? (
-						<button onClick={handleLogout} className="header__btn">
+						<button onClick={() => setModalOpen(true)} className="header__btn">
 							Odhlásit se
 						</button>
 					) : (
