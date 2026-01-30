@@ -104,4 +104,28 @@ router.get("/:buildingId/comments", protect, async (req, res) => {
 	}
 });
 
+// TODO: LEARN THIS
+router.delete("/:buildingId/comments/:commentId", protect, async (req, res) => {
+	try {
+		const { buildingId, commentId } = req.params;
+
+		const comment = await Comment.findOneAndDelete({
+			_id: commentId,
+			buildingId,
+		});
+
+		if (!comment) {
+			return res.status(404).json({
+				message: "Comment not found for this building",
+			});
+		}
+
+		// TODO: 204?
+		return res.status(204).send();
+	} catch (err) {
+		console.error(err);
+		res.status(500).json({ message: "Server error" });
+	}
+});
+
 export default router;

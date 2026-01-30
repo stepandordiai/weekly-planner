@@ -89,6 +89,20 @@ const BuildingPage = ({ buildings }) => {
 		}
 	};
 
+	const handleRemoveComment = async (commentId) => {
+		setLoading(true);
+		setError(null);
+		setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+
+		try {
+			await api.delete(`/api/buildings/${id}/comments/${commentId}`);
+		} catch (err) {
+			setError(err.response?.data.message);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const formatDateTimeNoSpaces = (createdAt: string) => {
 		const date = new Date(createdAt);
 
@@ -101,11 +115,6 @@ const BuildingPage = ({ buildings }) => {
 
 		return `${hours}:${minutes} ${year}-${month}-${day}`;
 	};
-
-	// const removeComment = () => {
-	// 	setComments((prev) => prev.filter((comment) => comment));
-	// };
-
 	return (
 		<main className="building-page">
 			<div style={{ display: "flex", gap: 5 }}>
@@ -174,7 +183,9 @@ const BuildingPage = ({ buildings }) => {
 												.replace(/\.\s/g, ".")} */}
 											{formatDateTimeNoSpaces(comment.createdAt)}
 										</p>
-										<button>X</button>
+										<button onClick={() => handleRemoveComment(comment.id)}>
+											X
+										</button>
 									</div>
 								);
 							})}
