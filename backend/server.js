@@ -6,6 +6,7 @@ import usersRoutes from "./routes/users.js";
 import buildingsRoutes from "./routes/buildings.js";
 import buildingRoutes from "./routes/building.js";
 import toolsRoutes from "./routes/tools.js";
+import leadsRoutes from "./routes/leads.js";
 import { connectDB } from "./config/db.js";
 import cors from "cors";
 dotenv.config();
@@ -22,6 +23,8 @@ const allowedOrigins = [
 	"https://sedmnik.netlify.app",
 	"http://localhost:3000",
 	"http://localhost:5173",
+	"https://www.flovas.cz/uk",
+	"https://www.flovas.cz/cs",
 ];
 
 // CORS for frontend domain
@@ -51,6 +54,8 @@ app.get("/health", (req, res) => {
 	res.status(200).write("ok");
 	res.end();
 });
+
+app.use("/leads", leadsRoutes);
 
 app.listen(PORT, () => {
 	console.log(`Server started at port ${PORT}`);
