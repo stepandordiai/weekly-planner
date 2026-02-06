@@ -7,7 +7,7 @@ router.post("/", async (req, res) => {
 	try {
 		const { tel } = req.body;
 
-		if (!tel) {
+		if (tel.trim() === "" || tel.length < 9) {
 			return res.status(400).json({ message: "Telephone number is required" });
 		}
 
